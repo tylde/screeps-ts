@@ -1,0 +1,30 @@
+{
+  "name": "screeps-ts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/tylde/screeps-ts.git",
+  "author": "tylde <mr.mkalinowski@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn build:rollup",
+    "build:rollup": "rollup --config rollup.config.js",
+    "build:watch": "yarn build:rollup --watch",
+    "dev": "build:watch"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@types/node": "^13.11.0",
+    "@types/screeps": "^3.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "rollup": "^2.3.3",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-typescript": "^1.0.1",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "ts-node": "^8.8.2",
+    "typescript": "^3.8.3"
+  }
+}

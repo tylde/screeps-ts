@@ -1,0 +1,33 @@
+{
+  "parser":  "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "airbnb-base/legacy",
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["@typescript-eslint"],
+  "settings": {
+    "import/extensions": [".ts"]
+  },
+  "rules": {
+    "indent": ["warn", 2],
+    "linebreak-style": "off",
+    "max-len": ["error", 120, 2],
+    "no-console": "off",
+    "object-curly-spacing": ["error", "never"],
+    "object-curly-newline": "off",
+    "lines-between-class-members": "off",
+    "class-methods-use-this": "off"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType":  "module"
+  },
+  "env": {
+    "node": true,
+    "commonjs": false,
+    "es6": true
+  }
+}
