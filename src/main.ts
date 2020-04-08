@@ -1,10 +1,15 @@
-export const loop = () => {
-  console.log(`Current game tick is ${Game.time}`);
+import MemoryHandler from './memory/MemoryHandler';
+import Realm from './realm/realm';
+import ScreepsConsole from './console/console';
 
-  // Automatically delete memory of missing creeps
-  for (const name in Memory.creeps) {
-    if (!(name in Game.creeps)) {
-      delete Memory.creeps[name];
-    }
-  }
-};
+ScreepsConsole.init();
+
+function main(): void {
+  MemoryHandler.init();
+  MemoryHandler.clean();
+
+  Realm.init();
+  Realm.run();
+}
+
+export const loop = main;
