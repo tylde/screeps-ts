@@ -3,7 +3,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript2';
 
 const plugins = [
-  clear({targets: ['dist']}),
+  clear({targets: ['default']}),
   resolve(),
   typescript({
     abortOnError: false,

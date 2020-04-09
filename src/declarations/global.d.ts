@@ -3,6 +3,7 @@
 declare namespace NodeJS {
   interface Global {
     printObject(): void;
+    setShowDebugLogs(value: boolean): void;
     order(): string;
   }
 
