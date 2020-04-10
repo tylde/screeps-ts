@@ -1,26 +1,23 @@
-import MemoryHandler from './memory/MemoryHandler';
+import Log from './console/Log';
+
+import GarbageCollector from './memory/GarbageCollector';
 import Realm from './realm/realm';
 import ScreepsConsole from './console/console';
 import Settings from './settings/Settings';
-import Log from './console/Log';
 
 ScreepsConsole.init();
-
-MemoryHandler.delete();
 Settings.init();
-Realm.init();
 
 function main(): void {
-  // console.log(`===== Tick: ${Game.time} ============================================================================`);
+  // console.log(`===== Tick: ${Game.time} =====`);
   try {
-    MemoryHandler.clean();
+    GarbageCollector.cleanMemoryAfterDefeat();
+    Realm.init();
+
+    GarbageCollector.clean();
     Realm.run();
   } catch (error) {
     Log.error(error.stack);
-
-    MemoryHandler.delete();
-    Settings.init();
-    Realm.init();
   }
 }
 

@@ -2,19 +2,25 @@ type DistrictType = 'CAPITAL' | 'QUARRY' | 'OUTPOST' | 'FORT' | 'NONE' | 'OCCUPI
 
 type SettlerRole = 'PIONEER' | 'MINER';
 
-type TaskType = '';
+type TaskType = '' | 'MINE' | 'TRANSPORT';
+
+interface ElementPosition {
+  room: string;
+  x: number;
+  y: number;
+}
 
 interface Memory {
-  flags: {[name: string]: FlagMemory};
+  // flags: {[name: string]: FlagMemory};
+  realm: RealmMemory;
+
+  provinces: {[name: string]: ProvinceMemory};
   rooms: {[name: string]: RoomMemory};
   spawns: {[name: string]: SpawnMemory};
+  creeps: {[name: string]: CreepMemory};
 
-  creeps: {[name: string]: SettlerMemory};
-
-  realm: RealmMemory;
-  provinces: {[name: string]: ProvinceMemory};
-  districts: {[name: string]: DistrictMemory};
-  settlers: {[name: string]: SettlerMemory};
+  mines: {[id: string]: MineMemory};
+  quarries: {[id: string]: QuarryMemory};
 
   settings: SettingsMemory;
 }
@@ -27,37 +33,43 @@ interface RealmMemory {
 interface ProvinceMemory {
   name: string;
   capitalName: string;
-  garrisonName: string;
+  garrisons: string[];
   districts: string[];
   settlers: string[];
-
-  plannedStructures: any[];
-}
-
-interface DistrictMemory {
-  name: string;
-  provinceName: string;
-  type: DistrictType;
 }
 
 interface RoomMemory {
   name: string;
   provinceName: string;
   type: DistrictType;
+  mines: string[];
+  quarry: string;
 }
 
-interface SettlerMemory {
-  name: string;
-  role: SettlerRole;
-  provinceName: string;
-  task: TaskType;
+interface MineMemory {
+  id: string;
+  districtName: string;
+  position: ElementPosition;
+  energyCapacity: number;
+}
+
+interface QuarryMemory {
+  id: string;
+  districtName: string;
+  position: ElementPosition;
+  mineralType: MineralConstant;
+  mineralDensity: number;
 }
 
 interface CreepMemory {
   name: string;
   role: SettlerRole;
   provinceName: string;
-  task: TaskType;
+  currentTask: TaskType;
+}
+
+interface SpawnMemory {
+  provinceName: string;
 }
 
 interface SettingsMemory {

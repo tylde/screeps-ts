@@ -1,32 +1,46 @@
 import Log from '../console/Log';
+
 import Garrison from '../garrison/Garrison';
+import Settler from '../settler/Settler';
 
 export default class Province {
   name: string;
   capitalName: string;
-  garrisonName: string;
+  garrisons: string[];
   districts: string[];
   settlers: string[];
-
-  plannedStructures: any[];
 
   constructor(name: string, garrison: StructureSpawn) {
     this.name = name;
     this.capitalName = garrison.room.name;
-    this.garrisonName = garrison.name;
+    this.garrisons = [garrison.name];
     this.districts = [garrison.room.name];
     this.settlers = [];
-
-    this.plannedStructures = Province.planStructures();
   }
+
+  // ===================================================================================================================
 
   static get(provinceName: string): Province {
     return Memory.provinces[provinceName];
   }
 
-  private static planStructures(): any[] {
-    return [];
+  static initProvinces(): void {
+    Memory.provinces = {};
   }
+
+  static addToMemory(provinceName: string, province: Province): void {
+    Memory.provinces = {...Memory.provinces, [provinceName]: province};
+  }
+
+  static updateInMemory(provinceName: string, province: Province): void {
+    Memory.provinces[provinceName] = province;
+  }
+
+  static deleteFromMemory(provinceName: string): void {
+    delete Memory.provinces[provinceName];
+  }
+
+  // ===================================================================================================================
 
   static addDistrict(provinceName: string, districtName: string): void {
     const province = Province.get(provinceName);
@@ -97,7 +111,7 @@ export default class Province {
     }
 
     const filteredSettlersByRole = settlers.filter((settlerName) => {
-      const settler = Memory.settlers[settlerName];
+      const settler = Memory.creeps[settlerName];
 
       if (!settler) {
         return false;
@@ -130,7 +144,8 @@ export default class Province {
 
   static spawnCreep(provinceName: string): void {
     const province = Province.get(provinceName);
-    const {garrisonName} = province;
+    const {garrisons} = province;
+    const garrisonName: string = garrisons[0];
 
     const creepToSpawn = Province.calculateCreepToSpawn(provinceName);
 
@@ -151,6 +166,16 @@ export default class Province {
     }
   }
 
+  static getStoredEnergy(): number {
+    // TODO get energy amount in capital storage and capital container
+    return 0;
+  }
+
+  static getStorageEnergy(): number {
+    // TODO get energy amount in capital storage
+    return 0;
+  }
+
   static run(provinceName: string): void {
     const province = Province.get(provinceName);
 
@@ -159,6 +184,8 @@ export default class Province {
       return;
     }
 
+    const {settlers} = province;
+
     const pioneersAmount: number = Province.getSettlersAmount(provinceName, 'PIONEER');
     if (pioneersAmount === 0) {
       Province.spawnCreep(provinceName);
@@ -166,5 +193,9 @@ export default class Province {
 
     // Log.info(`Running province ${provinceName}`);
     // stuff
+
+    settlers.forEach((settlerName) => {
+      Settler.run(settlerName);
+    });
   }
 }

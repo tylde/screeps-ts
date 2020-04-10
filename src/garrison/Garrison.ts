@@ -1,7 +1,7 @@
-import Settler from '../settler/Settler';
-import MemoryHandler from '../memory/MemoryHandler';
 import Log from '../console/Log';
 import Link from '../console/Link';
+
+import Settler from '../settler/Settler';
 
 export default class Garrison {
   static hasPlayerGarrisons(): boolean {
@@ -30,7 +30,7 @@ export default class Garrison {
   }
 
   static calculateRequiredEnergy(body: BodyPartConstant[]): number {
-    let requiredEnergy: number = 0;
+    let requiredEnergy = 0;
 
     body.forEach((bodyPart: BodyPartConstant) => {
       if (bodyPart === 'move') {
@@ -67,11 +67,10 @@ export default class Garrison {
   ): ScreepsReturnCode {
     const garrison = Game.spawns[garrisonName];
     const settler = new Settler(settlerName, role, provinceName);
-    const spawnResult: ScreepsReturnCode = garrison.spawnCreep(body, settlerName);
+    const spawnResult: ScreepsReturnCode = garrison.spawnCreep(body, settlerName, {memory: settler});
 
     if (spawnResult === OK) {
       Log.info(`${Link.toCapital(provinceName)} Spawning settler ${settlerName} (${role})`);
-      MemoryHandler.addSettler(settlerName, settler);
     } else {
       const message = Garrison.translateSpawnResult(spawnResult);
       Log.error(

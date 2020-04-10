@@ -1,7 +1,9 @@
+import Log from '../console/Log';
+
 import Garrison from '../garrison/garrison';
 import Province from '../province/province';
-import Log from '../console/Log';
-import MemoryHandler from '../memory/MemoryHandler';
+import District from '../district/District';
+import Settler from '../settler/Settler';
 
 export default class Realm {
   provinces: string[];
@@ -56,16 +58,16 @@ export default class Realm {
   }
 
   static initializeProvinces(): void {
-    MemoryHandler.initProvinces();
+    Province.initProvinces();
     Object.entries(Game.spawns).forEach(([, garrison], index) => {
       const provinceName = `Province ${index + 1}`;
       const province = new Province(provinceName, garrison);
 
       Realm.addProvince(provinceName);
-      MemoryHandler.addProvince(provinceName, province);
+      Province.addToMemory(provinceName, province);
 
-      if (Memory.districts) {
-        Object.entries(Memory.districts).forEach(([districtName, district]) => {
+      if (Memory.rooms) {
+        Object.entries(Memory.rooms).forEach(([districtName, district]) => {
           const {provinceName: districtProvinceName} = district;
           if (provinceName === districtProvinceName) {
             Province.addDistrict(provinceName, districtName);
@@ -73,8 +75,8 @@ export default class Realm {
         });
       }
 
-      if (Memory.settlers) {
-        Object.entries(Memory.settlers).forEach(([settlerName, settler]) => {
+      if (Memory.creeps) {
+        Object.entries(Memory.creeps).forEach(([settlerName, settler]) => {
           const {provinceName: settlerProvinceName} = settler;
           if (provinceName === settlerProvinceName) {
             Province.addSettler(provinceName, settlerName);
@@ -87,19 +89,22 @@ export default class Realm {
   }
 
   static initializeDistricts(): void {
-    if (!Memory.districts) {
-      MemoryHandler.initDistricts();
+    if (!Memory.rooms) {
+      District.initDistricts();
     }
   }
 
   static initializeSettlers(): void {
-    if (!Memory.settlers) {
-      MemoryHandler.initSettlers();
+    if (!Memory.creeps) {
+      Settler.initSettlers();
     }
   }
 
   static run(): void {
     const realm: Realm = Realm.get();
+    if (!realm) {
+      return;
+    }
     realm.provinces.forEach((provinceName) => {
       Province.run(provinceName);
     });
