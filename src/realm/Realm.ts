@@ -1,5 +1,7 @@
 import Log from '../console/Log';
 
+import ArrayHelper from '../helpers/ArrayHelper';
+
 import Garrison from '../garrison/garrison';
 import Province from '../province/province';
 import District from '../district/District';
@@ -31,7 +33,7 @@ export default class Realm {
 
     const provinceIndex: number = provinces.findIndex((element) => element === provinceName);
     if (provinceIndex > -1) {
-      const newProvinces: string[] = [...provinces.slice(0, provinceIndex), ...provinces.slice(provinceIndex + 1)];
+      const newProvinces: string[] = ArrayHelper.removeElementFromIndex(provinces, provinceIndex);
       Memory.realm = {...realm, provinces: newProvinces};
     } else {
       Log.warning(`Province ${provinceName} not found in realm while deleting`);

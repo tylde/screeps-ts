@@ -1,6 +1,6 @@
 type DistrictType = 'CAPITAL' | 'QUARRY' | 'OUTPOST' | 'FORT' | 'NONE' | 'OCCUPIED';
 
-type SettlerRole = 'PIONEER' | 'MINER';
+type SettlerRole = 'PIONEER' | 'MINER' | 'TRANSPORTER' | 'WORKER';
 
 type TaskType = '' | 'MINE' | 'TRANSPORT';
 

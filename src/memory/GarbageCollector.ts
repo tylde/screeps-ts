@@ -5,6 +5,7 @@ import Mine from '../resources/Mine';
 import Province from '../province/Province';
 import Quarry from '../resources/Quarry';
 import Settler from '../settler/Settler';
+import Garrison from '../garrison/Garrison';
 
 class GarbageCollector {
   static cleanDistricts(): void {
@@ -35,9 +36,21 @@ class GarbageCollector {
     });
   }
 
+  static cleanGarrisons(): void {
+    if (!Memory.spawns) {
+      return;
+    }
+    Object.keys(Memory.spawns).forEach((garrisonName) => {
+      if (!(garrisonName in Game.spawns)) {
+        Garrison.deleteFromMemory(garrisonName);
+      }
+    });
+  }
+
   static clean(): void {
     this.cleanDistricts();
     this.cleanSettlers();
+    this.cleanGarrisons();
   }
 
   static cleanMemoryAfterDefeat(): void {
@@ -48,6 +61,7 @@ class GarbageCollector {
     if (
       Object.keys(Memory.provinces).length === 0
       && Object.keys(Memory.rooms).length === 0
+      && Object.keys(Memory.spawns).length === 0
       && Object.keys(Memory.creeps).length === 0
       && Object.keys(Memory.mines).length === 0
       && Object.keys(Memory.quarries).length === 0
@@ -65,6 +79,7 @@ class GarbageCollector {
     Province.initProvinces();
     District.initDistricts();
     Settler.initSettlers();
+    Garrison.initGarrisons();
 
     Mine.initMines();
     Quarry.initQuarries();

@@ -1,5 +1,7 @@
 import Log from '../console/Log';
 
+import ArrayHelper from '../helpers/ArrayHelper';
+
 import Garrison from '../garrison/Garrison';
 import Settler from '../settler/Settler';
 
@@ -46,7 +48,7 @@ export default class Province {
     const province = Province.get(provinceName);
     const {districts} = province;
     const newDistricts: string[] = [...districts, districtName];
-    Memory.provinces[provinceName] = {...province, districts: newDistricts};
+    Province.updateInMemory(provinceName, {...province, districts: newDistricts});
   }
 
   static deleteDistrict(provinceName: string, districtName: string): void {
@@ -55,8 +57,8 @@ export default class Province {
 
     const districtIndex: number = districts.findIndex((element) => element === districtName);
     if (districtIndex > -1) {
-      const newDistricts: string[] = [...districts.slice(0, districtIndex), ...districts.slice(districtIndex + 1)];
-      Memory.provinces[provinceName] = {...province, districts: newDistricts};
+      const newDistricts: string[] = ArrayHelper.removeElementFromIndex(districts, districtIndex);
+      Province.updateInMemory(provinceName, {...province, districts: newDistricts});
     } else {
       Log.warning(`District ${districtName} not found in province ${provinceName} while deleting`);
     }
@@ -79,7 +81,7 @@ export default class Province {
     const province = Province.get(provinceName);
     const {settlers} = province;
     const newSettlers: string[] = [...settlers, settlerName];
-    Memory.provinces[provinceName] = {...province, settlers: newSettlers};
+    Province.updateInMemory(provinceName, {...province, settlers: newSettlers});
   }
 
   static deleteSettler(provinceName: string, settlerName: string): void {
@@ -88,8 +90,8 @@ export default class Province {
 
     const settlerIndex: number = settlers.findIndex((element) => element === settlerName);
     if (settlerIndex > -1) {
-      const newSettlers: string[] = [...settlers.slice(0, settlerIndex), ...settlers.slice(settlerIndex + 1)];
-      Memory.provinces[provinceName] = {...province, settlers: newSettlers};
+      const newSettlers: string[] = ArrayHelper.removeElementFromIndex(settlers, settlerIndex);
+      Province.updateInMemory(provinceName, {...province, settlers: newSettlers});
     } else {
       Log.warning(`Settler ${settlerName} not found in province ${provinceName} while deleting`);
     }
