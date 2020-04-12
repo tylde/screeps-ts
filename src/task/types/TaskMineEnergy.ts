@@ -4,16 +4,14 @@ import TASK_PRIORITIES from '../config/TaskPriorities';
 import Mine from '../../resources/Mine';
 import SettlerCommands from '../../settler/utils/SettlerCommands';
 import Log from '../../console/Log';
-import {TASK_MINE_ENERGY} from '../config/TasksConstants';
-import {SETTLER_MINER} from '../../settler/config/SettlerConstants';
 
-const TASK_TYPE = TASK_MINE_ENERGY;
+const TASK_TYPE: TaskType = 'TASK_MINE_ENERGY';
 
 export default class TaskMineEnergy extends Task {
   constructor(provinceName: string, mineId: string) {
     const type = TASK_TYPE;
     const priority = TASK_PRIORITIES[TASK_TYPE];
-    const assignableSettlers: SettlerRole[] = [SETTLER_MINER];
+    const assignableSettlers: SettlerRole[] = ['SETTLER_MINER'];
 
     const data: TaskData = {
       mineId

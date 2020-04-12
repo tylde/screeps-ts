@@ -9,16 +9,20 @@ export default class Settler {
   name: string;
   role: SettlerRole;
   provinceName: string;
-  assignedTask: string | null;
-  currentTask: string;
+
+  assignedTaskId: string | null;
+
+  taskPhase: string | null;
   lastHitPoints: number;
 
   constructor(name: string, role: SettlerRole, provinceName: string) {
     this.name = name;
-    this.provinceName = provinceName;
     this.role = role;
-    this.assignedTask = null;
-    this.currentTask = '';
+    this.provinceName = provinceName;
+
+    this.assignedTaskId = null;
+
+    this.taskPhase = null;
     this.lastHitPoints = 0;
   }
 
@@ -52,52 +56,81 @@ export default class Settler {
     Settler.updateInMemory(settlerName, newSettler);
   }
 
-  static setRole(settlerName: string, role: SettlerRole): void {
-    const settler: Settler = Settler.get(settlerName);
-    const newSettler: Settler = {...settler, role};
-    Settler.updateInMemory(settlerName, newSettler);
-  }
-
-  static setCurrentTask(settlerName: string, currentTask: string): void {
-    const settler: Settler = Settler.get(settlerName);
-    const newSettler: Settler = {...settler, currentTask};
-    Settler.updateInMemory(settlerName, newSettler);
-  }
-
   static setLastHitPoints(settlerName: string, hitPoints: number): void {
     const settler: Settler = Settler.get(settlerName);
     const newSettler: Settler = {...settler, lastHitPoints: hitPoints};
     Settler.updateInMemory(settlerName, newSettler);
   }
 
+  static setTaskPhase(settlerName: string, taskPhase: string): void {
+    const settler: Settler = Settler.get(settlerName);
+    const newSettler: Settler = {...settler, taskPhase};
+    Settler.updateInMemory(settlerName, newSettler);
+  }
+
+  static unsetTaskPhase(settlerName: string): void {
+    const settler: Settler = Settler.get(settlerName);
+    const newSettler: Settler = {...settler, taskPhase: null};
+    Settler.updateInMemory(settlerName, newSettler);
+  }
+
   static assignTask(settlerName: string, taskId: string): void {
     const settler: Settler = Settler.get(settlerName);
-    const newSettler: Settler = {...settler, assignedTask: taskId};
+    const newSettler: Settler = {...settler, assignedTaskId: taskId};
     Settler.updateInMemory(settlerName, newSettler);
   }
 
   static unassignTask(settlerName: string, taskId: string): void {
     const settler: Settler = Settler.get(settlerName);
-    const {assignedTask} = settler;
-    if (taskId !== assignedTask) {
-      Log.debug(`Tried to unassign wront task: ${taskId} (creeps assignedTask: ${assignedTask})`);
+    const {assignedTaskId} = settler;
+    if (taskId !== assignedTaskId) {
+      Log.debug(`Tried to unassign wrong task: ${taskId} (creeps assignedTask: ${assignedTaskId})`);
       return;
     }
-    const newSettler: Settler = {...settler, assignedTask: null};
+    const newSettler: Settler = {...settler, assignedTaskId: null};
     Settler.updateInMemory(settlerName, newSettler);
   }
 
   // ===================================================================================================================
 
+  static notifications(settlerName: string, creep: Creep): void {
+    if (SettlerUtils.isAttacked(creep)) {
+      Log.warning(`[${Link.toRoom(creep.pos.roomName)}] Creep ${settlerName} has been attacked!`);
+    }
+  }
+
+  static setStatus(settlerName: string, creep: Creep): void {
+    Settler.setLastHitPoints(settlerName, creep.hits);
+  }
+
+  static runTask(settlerName: string, creep: Creep): void {
+    const settler: Settler = Settler.get(settlerName);
+    const {assignedTaskId} = settler;
+    if (!assignedTaskId) {
+      return;
+    }
+
+    const task = Task.get(assignedTaskId);
+    if (!task) {
+      Log.debug(`[${settlerName}] No task found for assignedTaskId: ${assignedTaskId}`);
+      return;
+    }
+
+    const {type: taskType, id: taskId} = task;
+    switch (taskType) {
+      case 'TASK_BOOTSTRAP_PROVINCE':
+        TaskBootstrapProvince.run(creep, taskId);
+        break;
+      default:
+        Log.debug(`Settler has tried to run unknown task: ${taskType}`);
+        break;
+    }
+  }
+
   static run(settlerName: string): void {
     const settler: Settler = Settler.get(settlerName);
     if (!settler) {
       Log.warning(`No settler found with name ${settlerName}`);
-      return;
-    }
-
-    const {assignedTask} = settler;
-    if (!assignedTask) {
       return;
     }
 
@@ -111,26 +144,8 @@ export default class Settler {
       return;
     }
 
-    if (SettlerUtils.isAttacked(creep)) {
-      Log.warning(`[${Link.toRoom(creep.pos.roomName)}] Creep ${creep.name} has been attacked!`);
-    }
-
-    // TODO RUN ASSIGNED TASK
-    const task = Task.get(assignedTask);
-    if (!task) {
-      return;
-    }
-
-    const {type: taskType, id: taskId} = task;
-    switch (taskType) {
-    case 'TASK_BOOTSTRAP_PROVINCE':
-      TaskBootstrapProvince.run(creep, taskId);
-      break;
-    default:
-      Log.debug(`Settler has tried to run unknown task: ${taskType}`);
-      break;
-    }
-
-    Settler.setLastHitPoints(settlerName, creep.hits);
+    Settler.notifications(settlerName, creep);
+    Settler.runTask(settlerName, creep);
+    Settler.setStatus(settlerName, creep);
   }
 }

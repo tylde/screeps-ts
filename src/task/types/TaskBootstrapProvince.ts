@@ -4,16 +4,14 @@ import TASK_PRIORITIES from '../config/TaskPriorities';
 import Log from '../../console/Log';
 
 import SettlerUtils from '../../settler/utils/SettlerUtils';
-import {TASK_BOOTSTRAP_PROVINCE} from '../config/TasksConstants';
-import {SETTLER_PIONEER} from '../../settler/config/SettlerConstants';
 
-const TASK_TYPE = TASK_BOOTSTRAP_PROVINCE;
+const TASK_TYPE: TaskType = 'TASK_BOOTSTRAP_PROVINCE';
 
 export default class TaskBootstrapProvince extends Task {
   constructor(provinceName: string) {
     const type = TASK_TYPE;
     const priority = TASK_PRIORITIES[TASK_TYPE];
-    const assignableSettlers: SettlerRole[] = [SETTLER_PIONEER];
+    const assignableSettlers: SettlerRole[] = ['SETTLER_PIONEER'];
 
     const data = {};
 

@@ -5,7 +5,7 @@ export default class Mine {
   availableMinePositions: ElementPosition[];
 
   provinceName: string | null;
-  assignedTask: string | null;
+  assignedTaskId: string | null;
   containerId: string | null;
 
   constructor(source: Source) {
@@ -18,7 +18,7 @@ export default class Mine {
     this.availableMinePositions = Mine.getAvailableMinePositions(source);
 
     this.provinceName = null;
-    this.assignedTask = null;
+    this.assignedTaskId = null;
     this.containerId = null;
   }
 

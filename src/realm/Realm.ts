@@ -9,11 +9,11 @@ import Settler from '../settler/Settler';
 import {DISTRICT_CAPITAL} from '../district/config/DistrictConstants';
 
 export default class Realm {
-  provinces: string[];
+  provincesNames: string[];
   initializationTick: number;
 
   constructor() {
-    this.provinces = [];
+    this.provincesNames = [];
     this.initializationTick = Game.time;
   }
 
@@ -23,19 +23,19 @@ export default class Realm {
 
   static addProvince(provinceName: string): void {
     const realm: Realm = Realm.get();
-    const {provinces} = realm;
-    const newProvinces: string[] = [...provinces, provinceName];
-    Memory.realm = {...realm, provinces: newProvinces};
+    const {provincesNames} = realm;
+    const newProvinces: string[] = [...provincesNames, provinceName];
+    Memory.realm = {...realm, provincesNames: newProvinces};
   }
 
   static deleteProvince(provinceName: string): void {
     const realm: Realm = Realm.get();
-    const {provinces} = realm;
+    const {provincesNames} = realm;
 
-    const provinceIndex: number = provinces.findIndex((element) => element === provinceName);
+    const provinceIndex: number = provincesNames.findIndex((element) => element === provinceName);
     if (provinceIndex > -1) {
-      const newProvinces: string[] = ArrayHelper.removeElementFromIndex(provinces, provinceIndex);
-      Memory.realm = {...realm, provinces: newProvinces};
+      const newProvinces: string[] = ArrayHelper.removeElementFromIndex(provincesNames, provinceIndex);
+      Memory.realm = {...realm, provincesNames: newProvinces};
     } else {
       Log.debug(`Province ${provinceName} not found in realm while deleting`);
     }
@@ -95,7 +95,7 @@ export default class Realm {
     if (!realm) {
       return;
     }
-    realm.provinces.forEach((provinceName) => {
+    realm.provincesNames.forEach((provinceName) => {
       Province.run(provinceName);
     });
   }

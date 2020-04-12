@@ -26,22 +26,22 @@ interface Memory {
 }
 
 interface RealmMemory {
-  provinces: string[];
+  provincesNames: string[];
   initializationTick: number;
 }
 
 interface ProvinceMemory {
   name: string;
   capitalName: string;
-  garrisons: string[];
-  districts: string[];
-  settlers: string[];
+  garrisonsNames: string[];
+  districtsNames: string[];
+  settlersNames: string[];
 
-  mines: string[];
-  quarries: string[];
+  minesIds: string[];
+  quarriesIds: string[];
 
-  directives: string[];
-  tasks: string[];
+  directivesIds: string[];
+  tasksIds: string[];
 }
 
 interface RoomMemory {
@@ -59,7 +59,7 @@ interface MineMemory {
   availableMinePositions: ElementPosition[];
 
   provinceName: string | null;
-  assignedTask: string | null;
+  assignedTaskId: string | null;
   containerId: string | null;
 }
 
@@ -69,7 +69,9 @@ interface QuarryMemory {
   position: ElementPosition;
   mineralType: MineralConstant;
   mineralDensity: number;
-  assignedCreeps: string[];
+
+  provinceName: string | null;
+  assignedTaskId: string | null;
   containerId: string | null;
 }
 
@@ -77,8 +79,10 @@ interface CreepMemory {
   name: string;
   role: SettlerRole;
   provinceName: string;
-  assignedTask: string | null;
-  currentTask: string;
+
+  assignedTaskId: string | null;
+
+  taskPhase: string | null;
   lastHitPoints: number;
 }
 
@@ -102,8 +106,8 @@ interface TaskMemory {
   assignableSettlers: SettlerRole[];
   data: TaskData;
 
-  assignedSettler: string | null;
-  done: boolean;
+  assignedSettlerName: string | null;
+  isDone: boolean;
 }
 
 interface SpawnMemory {

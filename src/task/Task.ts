@@ -9,8 +9,8 @@ export default class Task {
   assignableSettlers: SettlerRole[];
   data: TaskData;
 
-  assignedSettler: string | null;
-  done: boolean;
+  assignedSettlerName: string | null;
+  isDone: boolean;
 
   constructor(
     type: TaskType,
@@ -26,8 +26,8 @@ export default class Task {
     this.assignableSettlers = assignableSettlers;
     this.data = data;
 
-    this.assignedSettler = null;
-    this.done = false;
+    this.assignedSettlerName = null;
+    this.isDone = false;
   }
 
   static generateTaskId(type: TaskType): string {
@@ -75,18 +75,18 @@ export default class Task {
 
   static assignSettler(taskId: string, settlerName: string): void {
     const task: Task = Task.get(taskId);
-    const newTask: Task = {...task, assignedSettler: settlerName};
+    const newTask: Task = {...task, assignedSettlerName: settlerName};
     Task.updateInMemory(taskId, newTask);
   }
 
   static unassignTask(taskId: string, settlerName: string): void {
     const task: Task = Task.get(taskId);
-    const {assignedSettler} = task;
-    if (settlerName !== assignedSettler) {
-      Log.debug(`Tried to unassign wrong settler: ${taskId} (task assignedSettler: ${assignedSettler})`);
+    const {assignedSettlerName} = task;
+    if (settlerName !== assignedSettlerName) {
+      Log.debug(`Tried to unassign wrong settler: ${taskId} (task assignedSettler: ${assignedSettlerName})`);
       return;
     }
-    const newTask: Task = {...task, assignedSettler: null};
+    const newTask: Task = {...task, assignedSettlerName: null};
     Task.updateInMemory(taskId, newTask);
   }
 }

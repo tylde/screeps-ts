@@ -12,7 +12,7 @@
     "import/extensions": [".ts"]
   },
   "rules": {
-    "indent": ["warn", 2],
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
     "linebreak-style": "off",
     "max-len": ["error", 120, 2],
     "no-console": "off",

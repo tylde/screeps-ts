@@ -123,7 +123,7 @@ export default class Garrison {
     const spawnResult: ScreepsReturnCode = garrison.spawnCreep(body, settlerName, {memory: settler});
 
     if (spawnResult === OK) {
-      Log.info(`${Link.toCapital(provinceName)} Spawning settler ${settlerName} (${role})`);
+      Log.info(`${Link.toCapital(provinceName)} Spawning settler ${settlerName}`);
     } else {
       const message = Garrison.translateSpawnResult(spawnResult);
       Log.error(

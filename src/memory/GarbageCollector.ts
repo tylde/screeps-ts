@@ -33,10 +33,10 @@ class GarbageCollector {
     Object.keys(Memory.creeps).forEach((settlerName) => {
       if (!(settlerName in Game.creeps)) {
         Log.debug(`Deleting settler ${settlerName} from memory`);
-        const {provinceName, assignedTask} = Settler.get(settlerName);
+        const {provinceName, assignedTaskId} = Settler.get(settlerName);
         Province.deleteSettler(provinceName, settlerName);
-        if (assignedTask) {
-          Task.unassignTask(assignedTask, settlerName);
+        if (assignedTaskId) {
+          Task.unassignTask(assignedTaskId, settlerName);
         }
         Settler.deleteFromMemory(settlerName);
       }
@@ -59,10 +59,10 @@ class GarbageCollector {
 
   static cleanDoneTasks(): void {
     Object.entries(Memory.tasks).forEach(([taskId, task]) => {
-      const {done, assignedSettler, provinceName} = task;
-      if (done) {
-        if (assignedSettler) {
-          Settler.unassignTask(assignedSettler, taskId);
+      const {isDone, assignedSettlerName, provinceName} = task;
+      if (isDone) {
+        if (assignedSettlerName) {
+          Settler.unassignTask(assignedSettlerName, taskId);
         }
         Province.deleteTask(provinceName, taskId);
         Task.deleteFromMemory(taskId);

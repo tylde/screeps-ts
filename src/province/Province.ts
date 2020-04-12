@@ -14,28 +14,28 @@ import DistrictUtils from '../district/utils/DistrictUtils';
 export default class Province {
   name: string;
   capitalName: string;
-  garrisons: string[];
-  districts: string[];
-  settlers: string[];
+  garrisonsNames: string[];
+  districtsNames: string[];
+  settlersNames: string[];
 
-  mines: string[];
-  quarries: string[];
+  minesIds: string[];
+  quarriesIds: string[];
 
-  directives: string[];
-  tasks: string[];
+  directivesIds: string[];
+  tasksIds: string[];
 
   constructor(name: string, garrison: StructureSpawn) {
     this.name = name;
     this.capitalName = garrison.room.name;
-    this.garrisons = [garrison.name];
-    this.districts = [garrison.room.name];
-    this.settlers = [];
+    this.garrisonsNames = [garrison.name];
+    this.districtsNames = [garrison.room.name];
+    this.settlersNames = [];
 
-    this.mines = [];
-    this.quarries = [];
+    this.minesIds = [];
+    this.quarriesIds = [];
 
-    this.directives = [];
-    this.tasks = [];
+    this.directivesIds = [];
+    this.tasksIds = [];
   }
 
   // ===================================================================================================================
@@ -64,19 +64,19 @@ export default class Province {
 
   static addDistrict(provinceName: string, districtName: string): void {
     const province = Province.get(provinceName);
-    const {districts} = province;
-    const newDistricts: string[] = [...districts, districtName];
-    Province.updateInMemory(provinceName, {...province, districts: newDistricts});
+    const {districtsNames} = province;
+    const newDistricts: string[] = [...districtsNames, districtName];
+    Province.updateInMemory(provinceName, {...province, districtsNames: newDistricts});
   }
 
   static deleteDistrict(provinceName: string, districtName: string): void {
     const province = Province.get(provinceName);
-    const {districts} = province;
+    const {districtsNames} = province;
 
-    const districtIndex: number = districts.findIndex((element) => element === districtName);
+    const districtIndex: number = districtsNames.findIndex((element) => element === districtName);
     if (districtIndex > -1) {
-      const newDistricts: string[] = ArrayHelper.removeElementFromIndex(districts, districtIndex);
-      Province.updateInMemory(provinceName, {...province, districts: newDistricts});
+      const newDistricts: string[] = ArrayHelper.removeElementFromIndex(districtsNames, districtIndex);
+      Province.updateInMemory(provinceName, {...province, districtsNames: newDistricts});
     } else {
       Log.debug(`District ${districtName} not found in province ${provinceName} while deleting`);
     }
@@ -84,32 +84,32 @@ export default class Province {
 
   static hasDistrict(provinceName: string, districtName: string): boolean {
     const province = Province.get(provinceName);
-    const {districts} = province;
-    const districtIndex: number = districts.findIndex((element) => element === districtName);
+    const {districtsNames} = province;
+    const districtIndex: number = districtsNames.findIndex((element) => element === districtName);
     return districtIndex > -1;
   }
 
   static getDistrictsAmount(provinceName: string): number {
     const province = Province.get(provinceName);
-    const {districts} = province;
-    return districts.length;
+    const {districtsNames} = province;
+    return districtsNames.length;
   }
 
   static addGarrison(provinceName: string, garrisonName: string): void {
     const province = Province.get(provinceName);
-    const {garrisons} = province;
-    const newGarrisons: string[] = [...garrisons, garrisonName];
-    Province.updateInMemory(provinceName, {...province, garrisons: newGarrisons});
+    const {garrisonsNames} = province;
+    const newGarrisons: string[] = [...garrisonsNames, garrisonName];
+    Province.updateInMemory(provinceName, {...province, garrisonsNames: newGarrisons});
   }
 
   static deleteGarrison(provinceName: string, garrisonName: string): void {
     const province = Province.get(provinceName);
-    const {garrisons} = province;
+    const {garrisonsNames} = province;
 
-    const garrisonIndex: number = garrisons.findIndex((element) => element === garrisonName);
+    const garrisonIndex: number = garrisonsNames.findIndex((element) => element === garrisonName);
     if (garrisonIndex > -1) {
-      const newGarrisons: string[] = ArrayHelper.removeElementFromIndex(garrisons, garrisonIndex);
-      Province.updateInMemory(provinceName, {...province, garrisons: newGarrisons});
+      const newGarrisons: string[] = ArrayHelper.removeElementFromIndex(garrisonsNames, garrisonIndex);
+      Province.updateInMemory(provinceName, {...province, garrisonsNames: newGarrisons});
     } else {
       Log.debug(`Garrison ${garrisonName} not found in province ${provinceName} while deleting`);
     }
@@ -117,22 +117,22 @@ export default class Province {
 
   static hasGarrison(provinceName: string, garrisonName: string): boolean {
     const province = Province.get(provinceName);
-    const {garrisons} = province;
-    const garrisonIndex: number = garrisons.findIndex((element) => element === garrisonName);
+    const {garrisonsNames} = province;
+    const garrisonIndex: number = garrisonsNames.findIndex((element) => element === garrisonName);
     return garrisonIndex > -1;
   }
 
   static getGarrisonsAmount(provinceName: string): number {
     const province = Province.get(provinceName);
-    const {garrisons} = province;
-    return garrisons.length;
+    const {garrisonsNames} = province;
+    return garrisonsNames.length;
   }
 
   static addSettler(provinceName: string, settlerName: string): void {
     const province = Province.get(provinceName);
-    const {settlers} = province;
-    const newSettlers: string[] = [...settlers, settlerName];
-    Province.updateInMemory(provinceName, {...province, settlers: newSettlers});
+    const {settlersNames} = province;
+    const newSettlers: string[] = [...settlersNames, settlerName];
+    Province.updateInMemory(provinceName, {...province, settlersNames: newSettlers});
   }
 
   static deleteSettler(provinceName: string, settlerName: string): void {
@@ -143,12 +143,12 @@ export default class Province {
       return;
     }
 
-    const {settlers} = province;
+    const {settlersNames} = province;
 
-    const settlerIndex: number = settlers.findIndex((element) => element === settlerName);
+    const settlerIndex: number = settlersNames.findIndex((element) => element === settlerName);
     if (settlerIndex > -1) {
-      const newSettlers: string[] = ArrayHelper.removeElementFromIndex(settlers, settlerIndex);
-      Province.updateInMemory(provinceName, {...province, settlers: newSettlers});
+      const newSettlers: string[] = ArrayHelper.removeElementFromIndex(settlersNames, settlerIndex);
+      Province.updateInMemory(provinceName, {...province, settlersNames: newSettlers});
     } else {
       Log.debug(`Settler ${settlerName} not found in province ${provinceName} while deleting`);
     }
@@ -156,20 +156,20 @@ export default class Province {
 
   static hasSettler(provinceName: string, settlerName: string): boolean {
     const province = Province.get(provinceName);
-    const {settlers} = province;
-    const settlerIndex: number = settlers.findIndex((element) => element === settlerName);
+    const {settlersNames} = province;
+    const settlerIndex: number = settlersNames.findIndex((element) => element === settlerName);
     return settlerIndex > -1;
   }
 
   static getSettlersAmount(provinceName: string, settlerRole?: SettlerRole): number {
     const province = Province.get(provinceName);
-    const {settlers} = province;
+    const {settlersNames} = province;
 
     if (!settlerRole) {
-      return settlers.length;
+      return settlersNames.length;
     }
 
-    const filteredSettlersByRole = settlers.filter((settlerName) => {
+    const filteredSettlersByRole = settlersNames.filter((settlerName) => {
       const settler = Memory.creeps[settlerName];
 
       if (!settler) {
@@ -185,19 +185,19 @@ export default class Province {
 
   static addTask(provinceName: string, taskName: string): void {
     const province = Province.get(provinceName);
-    const {tasks} = province;
-    const newTasks: string[] = [...tasks, taskName];
-    Province.updateInMemory(provinceName, {...province, tasks: newTasks});
+    const {tasksIds} = province;
+    const newTasks: string[] = [...tasksIds, taskName];
+    Province.updateInMemory(provinceName, {...province, tasksIds: newTasks});
   }
 
   static deleteTask(provinceName: string, taskName: string): void {
     const province = Province.get(provinceName);
-    const {tasks} = province;
+    const {tasksIds} = province;
 
-    const taskIndex: number = tasks.findIndex((element) => element === taskName);
+    const taskIndex: number = tasksIds.findIndex((element) => element === taskName);
     if (taskIndex > -1) {
-      const newTasks: string[] = ArrayHelper.removeElementFromIndex(tasks, taskIndex);
-      Province.updateInMemory(provinceName, {...province, tasks: newTasks});
+      const newTasks: string[] = ArrayHelper.removeElementFromIndex(tasksIds, taskIndex);
+      Province.updateInMemory(provinceName, {...province, tasksIds: newTasks});
     } else {
       Log.debug(`Task ${taskName} not found in province ${provinceName} while deleting`);
     }
@@ -209,7 +209,7 @@ export default class Province {
 
   static manageBootstrapingTasks(provinceName: string): void {
     const province = Province.get(provinceName);
-    const {capitalName, tasks} = province;
+    const {capitalName, tasksIds} = province;
     const capitalRoom = Capital.getCapitalRoom(capitalName);
     if (!capitalRoom) {
       Log.debug(`[${provinceName}] Cannot find capitalRoom for capitalName: ${capitalName}`);
@@ -231,7 +231,7 @@ export default class Province {
       requiredTasks = 2;
     }
 
-    const currentTasks: Task[] = tasks
+    const currentTasks: Task[] = tasksIds
       .map((taskId) => Task.get(taskId))
       .filter(task => TaskUtils.isType(task, 'TASK_BOOTSTRAP_PROVINCE'));
 
@@ -251,18 +251,18 @@ export default class Province {
 
   static assignTasks(provinceName: string): void {
     const province = Province.get(provinceName);
-    const {settlers, tasks} = province;
+    const {settlersNames, tasksIds} = province;
 
-    const unassignedTasks = tasks.map(taskId => Task.get(taskId))
-      .filter(task => task.assignedSettler === null);
+    const unassignedTasks = tasksIds.map(taskId => Task.get(taskId))
+      .filter(task => task.assignedSettlerName === null);
 
     // TODO CHECK
     unassignedTasks.sort((a, b) => a.priority < b.priority ? 1 : -1);
 
     unassignedTasks.forEach((task) => {
       const {assignableSettlers, id: taskId} = task;
-      const unassignedSettlers = settlers.map(settlerName => Settler.get(settlerName))
-        .filter(settler => settler.assignedTask === null)
+      const unassignedSettlers = settlersNames.map(settlerName => Settler.get(settlerName))
+        .filter(settler => settler.assignedTaskId === null)
         .filter(settler => assignableSettlers.includes(settler.role));
 
       const settlerToAssign = unassignedSettlers[0];
@@ -292,7 +292,7 @@ export default class Province {
 
   static spawnCreep(provinceName: string): void {
     const province = Province.get(provinceName);
-    const {garrisons, capitalName} = province;
+    const {garrisonsNames, capitalName} = province;
 
     const capitalRoom: Room = Game.rooms[capitalName];
 
@@ -305,7 +305,7 @@ export default class Province {
     const [{role, body}] = creepsToSpawn;
 
     // TODO
-    garrisons.forEach((garrisonName) => {
+    garrisonsNames.forEach((garrisonName) => {
       if (Capital.canSpawnSettler(capitalRoom, body)) {
         const settlerName = Garrison.calculateSettlerName(role);
         const spawnResult: ScreepsReturnCode = Garrison
@@ -329,8 +329,8 @@ export default class Province {
 
   static manageSettlers(provinceName: string): void {
     const province = Province.get(provinceName);
-    const {settlers} = province;
-    settlers.forEach((settlerName) => {
+    const {settlersNames} = province;
+    settlersNames.forEach((settlerName) => {
       Settler.run(settlerName);
     });
   }

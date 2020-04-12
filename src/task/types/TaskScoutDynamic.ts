@@ -1,9 +1,7 @@
 import Task from '../Task';
 import TASK_PRIORITIES from '../config/TaskPriorities';
 
-import {TASK_SCOUT_DYNAMIC} from '../config/TasksConstants';
-
-const TASK_TYPE = TASK_SCOUT_DYNAMIC;
+const TASK_TYPE: TaskType = 'TASK_SCOUT_DYNAMIC';
 
 export default class TaskScoutDynamic extends Task {
   constructor(provinceName: string) {
