@@ -3,6 +3,8 @@ import Link from '../console/Link';
 
 import Settler from '../settler/Settler';
 
+import SETTLER_NAMES from '../settler/config/SettlerNames';
+
 export default class Garrison {
   provinceName: string;
 
@@ -36,6 +38,27 @@ export default class Garrison {
 
   static hasPlayerGarrisons(): boolean {
     return Object.keys(Game.spawns).length > 0;
+  }
+
+  static calculateSettlerName(settlerRole: SettlerRole): string {
+    const settlersAmount: number = Garrison.getSettlersAmount(settlerRole);
+    const nameBase: string = SETTLER_NAMES[settlerRole];
+
+    for (let i = 1; i <= settlersAmount + 1; i++) {
+      const potentialName = `${nameBase}_${i}`;
+      if (!(potentialName in Game.creeps)) {
+        return potentialName;
+      }
+    }
+    Log.debug(`Cannot find settler name for role: ${settlerRole}`);
+    return Game.time.toString();
+  }
+
+  static getSettlersAmount(settlerRole?: SettlerRole): number {
+    if (!settlerRole) {
+      return Object.values(Memory.creeps).length;
+    }
+    return Object.values(Memory.creeps).filter((settler: Settler) => settler.role === settlerRole).length;
   }
 
   static translateSpawnResult(spawnResult: ScreepsReturnCode): string {
@@ -83,7 +106,7 @@ export default class Garrison {
     });
 
     return requiredEnergy;
-}
+  }
 
   static canSpawnSettler(garrisonName: string, body: BodyPartConstant[]): boolean {
     const garrisonRoom: Room = Game.spawns[garrisonName].room;

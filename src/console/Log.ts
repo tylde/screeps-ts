@@ -25,6 +25,8 @@ export default class Log {
 
   static debug(message: string): void {
     const type = this.messageType('DEBUG', '#9B59B6');
-    console.log(`${type}: ${message}`);
+    if (Memory.settings.showDebugLogs) {
+      console.log(`${type}: ${message}`);
+    }
   }
 }

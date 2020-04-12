@@ -4,6 +4,8 @@ export default class Quarry {
   position: ElementPosition;
   mineralType: MineralConstant;
   mineralDensity: number;
+  assignedCreeps: string[];
+  containerId: string | null;
 
   constructor(
     id: string, districtName: string, position: ElementPosition, mineralType: MineralConstant, mineralDensity: number
@@ -13,6 +15,8 @@ export default class Quarry {
     this.position = position;
     this.mineralType = mineralType;
     this.mineralDensity = mineralDensity;
+    this.assignedCreeps = [];
+    this.containerId = null;
   }
 
   // ===================================================================================================================

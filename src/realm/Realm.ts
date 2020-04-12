@@ -6,6 +6,7 @@ import Garrison from '../garrison/garrison';
 import Province from '../province/province';
 import District from '../district/District';
 import Settler from '../settler/Settler';
+import {DISTRICT_CAPITAL} from '../district/config/DistrictConstants';
 
 export default class Realm {
   provinces: string[];
@@ -36,11 +37,11 @@ export default class Realm {
       const newProvinces: string[] = ArrayHelper.removeElementFromIndex(provinces, provinceIndex);
       Memory.realm = {...realm, provinces: newProvinces};
     } else {
-      Log.warning(`Province ${provinceName} not found in realm while deleting`);
+      Log.debug(`Province ${provinceName} not found in realm while deleting`);
     }
   }
 
-  static init(): void {
+  static prepare(): void {
     if (Memory.realm) {
       return;
     }
@@ -61,33 +62,20 @@ export default class Realm {
 
   static initializeProvinces(): void {
     Province.initProvinces();
-    Object.entries(Game.spawns).forEach(([, garrison], index) => {
+    Object.entries(Game.spawns).forEach(([garrisonName, spawn], index) => {
       const provinceName = `Province ${index + 1}`;
-      const province = new Province(provinceName, garrison);
+      const province = new Province(provinceName, spawn);
+      const districtName = spawn.room.name;
+
+      const district: District = new District(districtName, provinceName, DISTRICT_CAPITAL);
+      const garrison: Garrison = new Garrison(provinceName);
 
       Realm.addProvince(provinceName);
       Province.addToMemory(provinceName, province);
-
-      if (Memory.rooms) {
-        Object.entries(Memory.rooms).forEach(([districtName, district]) => {
-          const {provinceName: districtProvinceName} = district;
-          if (provinceName === districtProvinceName) {
-            Province.addDistrict(provinceName, districtName);
-          }
-        });
-      }
-
-      if (Memory.creeps) {
-        Object.entries(Memory.creeps).forEach(([settlerName, settler]) => {
-          const {provinceName: settlerProvinceName} = settler;
-          if (provinceName === settlerProvinceName) {
-            Province.addSettler(provinceName, settlerName);
-          }
-        });
-      }
-
-      Log.success(`Initialized provinces: ${Object.keys(Memory.provinces).length}`);
+      District.addToMemory(districtName, district);
+      Garrison.addToMemory(garrisonName, garrison);
     });
+    Log.success(`Initialized provinces: ${Object.keys(Memory.provinces).length}`);
   }
 
   static initializeDistricts(): void {

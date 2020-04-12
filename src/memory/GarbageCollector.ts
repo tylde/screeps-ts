@@ -1,11 +1,13 @@
 import Log from '../console/Log';
 
 import District from '../district/District';
+import Garrison from '../garrison/Garrison';
 import Mine from '../resources/Mine';
 import Province from '../province/Province';
 import Quarry from '../resources/Quarry';
 import Settler from '../settler/Settler';
-import Garrison from '../garrison/Garrison';
+import Task from '../task/Task';
+import Directive from '../directives/Directive';
 
 class GarbageCollector {
   static cleanDistricts(): void {
@@ -13,10 +15,12 @@ class GarbageCollector {
       return;
     }
     Object.keys(Memory.rooms).forEach((districtName) => {
-      if (!(districtName in Game.creeps)) {
-        const district: District = Memory.rooms[districtName];
-        const districtPronince: string = district.provinceName;
-        Province.deleteDistrict(districtPronince, districtName);
+      if (!(districtName in Game.rooms)) {
+        Log.debug(`Deleting district ${districtName} from memory`);
+        const {provinceName, mines, quarry} = District.get(districtName);
+        Province.deleteDistrict(provinceName, districtName);
+        mines.forEach(mineId => Mine.deleteFromMemory(mineId));
+        Quarry.deleteFromMemory(quarry);
         District.deleteFromMemory(districtName);
       }
     });
@@ -28,9 +32,12 @@ class GarbageCollector {
     }
     Object.keys(Memory.creeps).forEach((settlerName) => {
       if (!(settlerName in Game.creeps)) {
-        const settler: Settler = Memory.creeps[settlerName];
-        const settlerProvince: string = settler.provinceName;
-        Province.deleteSettler(settlerProvince, settlerName);
+        Log.debug(`Deleting settler ${settlerName} from memory`);
+        const {provinceName, assignedTask} = Settler.get(settlerName);
+        Province.deleteSettler(provinceName, settlerName);
+        if (assignedTask) {
+          Task.unassignTask(assignedTask, settlerName);
+        }
         Settler.deleteFromMemory(settlerName);
       }
     });
@@ -42,7 +49,23 @@ class GarbageCollector {
     }
     Object.keys(Memory.spawns).forEach((garrisonName) => {
       if (!(garrisonName in Game.spawns)) {
+        Log.debug(`Deleting garrison ${garrisonName} from memory`);
+        const {provinceName} = Garrison.get(garrisonName);
+        Province.deleteGarrison(provinceName, garrisonName);
         Garrison.deleteFromMemory(garrisonName);
+      }
+    });
+  }
+
+  static cleanDoneTasks(): void {
+    Object.entries(Memory.tasks).forEach(([taskId, task]) => {
+      const {done, assignedSettler, provinceName} = task;
+      if (done) {
+        if (assignedSettler) {
+          Settler.unassignTask(assignedSettler, taskId);
+        }
+        Province.deleteTask(provinceName, taskId);
+        Task.deleteFromMemory(taskId);
       }
     });
   }
@@ -51,6 +74,7 @@ class GarbageCollector {
     this.cleanDistricts();
     this.cleanSettlers();
     this.cleanGarrisons();
+    this.cleanDoneTasks();
   }
 
   static cleanMemoryAfterDefeat(): void {
@@ -83,6 +107,9 @@ class GarbageCollector {
 
     Mine.initMines();
     Quarry.initQuarries();
+
+    Task.initTasks();
+    Directive.initDirectives();
   }
 }
 

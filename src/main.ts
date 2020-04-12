@@ -4,18 +4,24 @@ import GarbageCollector from './memory/GarbageCollector';
 import Realm from './realm/realm';
 import ScreepsConsole from './console/console';
 import Settings from './settings/Settings';
+import Visuals from './visuals/Visuals';
 
 ScreepsConsole.init();
-Settings.init();
+Settings.init({showDebugLogs: true});
 
 function main(): void {
   // console.log(`===== Tick: ${Game.time} =====`);
   try {
+    // const startCpu = Game.cpu.getUsed();
+
     GarbageCollector.cleanMemoryAfterDefeat();
-    Realm.init();
+    Realm.prepare();
 
     GarbageCollector.clean();
     Realm.run();
+    Visuals.draw();
+
+    // Log.debug(`Tick usage: ${Game.cpu.getUsed() - startCpu}`);
   } catch (error) {
     Log.error(error.stack);
   }

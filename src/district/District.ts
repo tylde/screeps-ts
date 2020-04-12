@@ -24,14 +24,12 @@ export default class District {
     this.quarry = quarry;
 
     sources.forEach((source: Source) => {
-      const {energyCapacity, id, pos: {x, y}} = source;
-      const position: ElementPosition = {x, y, room: districtName};
-      const mineElement: Mine = new Mine(id, districtName, position, energyCapacity);
-      Mine.addToMemory(id, mineElement);
+      const mineElement: Mine = new Mine(source);
+      Mine.addToMemory(source.id, mineElement);
     });
     minerals.forEach((mineral: Mineral) => {
       const {id, pos: {x, y}, mineralType, density} = mineral;
-      const position: ElementPosition = {x, y, room: districtName};
+      const position: ElementPosition = {x, y, roomName: districtName};
       const quarryElement: Quarry = new Quarry(id, districtName, position, mineralType, density);
       Quarry.addToMemory(id, quarryElement);
     });

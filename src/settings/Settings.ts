@@ -3,8 +3,8 @@ import Log from '../console/Log';
 export default class Settings {
   showDebugLogs: boolean;
 
-  constructor() {
-    this.showDebugLogs = false;
+  constructor(showDebugLogs: boolean) {
+    this.showDebugLogs = showDebugLogs;
   }
 
   static setShowDebugLogs(value: boolean): void {
@@ -16,9 +16,9 @@ export default class Settings {
     }
   }
 
-  static init(): void {
+  static init(options: {showDebugLogs: boolean}): void {
     if (!Memory.settings) {
-      Memory.settings = new Settings();
+      Memory.settings = new Settings(options.showDebugLogs);
     }
   }
 }
