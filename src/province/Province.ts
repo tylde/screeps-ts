@@ -10,6 +10,9 @@ import TaskUtils from '../task/utils/TaskUtils';
 
 import TaskBootstrapProvince from '../task/types/TaskBootstrapProvince';
 import DistrictUtils from '../district/utils/DistrictUtils';
+import Mine from '../resources/Mine';
+import TaskMineEnergy from '../task/types/TaskMineEnergy';
+import SettlerPatterns from '../settler/config/SettlerPatterns';
 
 export default class Province {
   name: string;
@@ -31,8 +34,15 @@ export default class Province {
     this.districtsNames = [garrison.room.name];
     this.settlersNames = [];
 
-    this.minesIds = [];
-    this.quarriesIds = [];
+    const room: Room = garrison.room;
+    const sources: Source[] = room.find(FIND_SOURCES);
+    const minerals: Mineral[] = room.find(FIND_MINERALS);
+
+    const minesIds: string[] = sources.map((source: Source) => source.id);
+    const quarryIds: string[] = minerals.map((mineral: Mineral) => mineral.id);
+
+    this.minesIds = minesIds;
+    this.quarriesIds = quarryIds;
 
     this.directivesIds = [];
     this.tasksIds = [];
@@ -244,9 +254,36 @@ export default class Province {
     }
   }
 
+  static manageMiningEnergyTasks(provinceName: string): void {
+    const province = Province.get(provinceName);
+    const {capitalName, minesIds} = province;
+    const capitalRoom = Capital.getCapitalRoom(capitalName);
+    if (!capitalRoom) {
+      Log.debug(`[${provinceName}] Cannot find capitalRoom for capitalName: ${capitalName}`);
+      return;
+    }
+    const controller = capitalRoom.controller;
+    if (!controller) {
+      Log.debug(`[${provinceName}] Cannot find controller for capitalName: ${capitalName}`);
+      return;
+    }
+
+    const unassignedMines: Mine[] = minesIds.map(mineId => Mine.get(mineId))
+      .filter(mine => mine.assignedTaskId === null);
+
+    unassignedMines.forEach(unassignedMine => {
+      const {id: mineId} = unassignedMine;
+      const task = new TaskMineEnergy(provinceName, mineId);
+      const taskId = task.id;
+      Province.addTask(provinceName, taskId);
+      Task.addToMemory(taskId, task);
+      Mine.assignTask(mineId, taskId);
+    });
+  }
 
   static manageTasks(provinceName: string): void {
     Province.manageBootstrapingTasks(provinceName);
+    Province.manageMiningEnergyTasks(provinceName);
   }
 
   static assignTasks(provinceName: string): void {
@@ -257,7 +294,7 @@ export default class Province {
       .filter(task => task.assignedSettlerName === null);
 
     // TODO CHECK
-    unassignedTasks.sort((a, b) => a.priority < b.priority ? 1 : -1);
+    unassignedTasks.sort((a, b) => a.priority > b.priority ? 1 : -1);
 
     unassignedTasks.forEach((task) => {
       const {assignableSettlers, id: taskId} = task;
@@ -278,7 +315,7 @@ export default class Province {
     provinceName: string
   ): {body: BodyPartConstant[]; role: SettlerRole}[] {
     const province = Province.get(provinceName);
-    const {capitalName} = province;
+    const {capitalName, tasksIds} = province;
     const capitalRoom: Room = Game.rooms[capitalName];
 
     if (!capitalRoom) {
@@ -286,8 +323,29 @@ export default class Province {
       return [];
     }
 
-    // TODO
-    return [{role: 'SETTLER_PIONEER', body: [WORK, CARRY, MOVE]}];
+    const unassignedTasks = tasksIds.map((taskId) => Task.get(taskId))
+      .filter(task => task.assignedSettlerName === null);
+
+    if (unassignedTasks.length === 0) {
+      return [];
+    }
+
+    // TODO MAKE METHOD
+    unassignedTasks.sort((a, b) => a.priority > b.priority ? 1 : -1);
+
+    const unassignedTask = unassignedTasks[0];
+    const {assignableSettlers, type} = unassignedTask;
+
+    if (assignableSettlers.length === 0) {
+      Log.debug(`Task type: ${type} has not any assignableSettlers`);
+      return [];
+    }
+
+    const settlerRole = assignableSettlers[0];
+
+    const settlerBody = SettlerPatterns.calculateBodyToSpawn(settlerRole);
+
+    return [{role: settlerRole, body: settlerBody}];
   }
 
   static spawnCreep(provinceName: string): void {
@@ -321,10 +379,7 @@ export default class Province {
   static manageSpawn(provinceName: string): void {
     // const province = Province.get(provinceName);
 
-    const pioneersAmount: number = Province.getSettlersAmount(provinceName, 'SETTLER_PIONEER');
-    if (pioneersAmount < 2) {
-      Province.spawnCreep(provinceName);
-    }
+    Province.spawnCreep(provinceName);
   }
 
   static manageSettlers(provinceName: string): void {

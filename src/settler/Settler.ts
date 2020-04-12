@@ -4,6 +4,7 @@ import Link from '../console/Link';
 import SettlerUtils from './utils/SettlerUtils';
 import Task from '../task/Task';
 import TaskBootstrapProvince from '../task/types/TaskBootstrapProvince';
+import TaskMineEnergy from '../task/types/TaskMineEnergy';
 
 export default class Settler {
   name: string;
@@ -120,6 +121,9 @@ export default class Settler {
     switch (taskType) {
       case 'TASK_BOOTSTRAP_PROVINCE':
         TaskBootstrapProvince.run(creep, taskId);
+        break;
+      case 'TASK_MINE_ENERGY':
+        TaskMineEnergy.run(creep, taskId);
         break;
       default:
         Log.debug(`Settler has tried to run unknown task: ${taskType}`);

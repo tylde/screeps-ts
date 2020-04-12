@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 export default class Log {
   private static messageType(string: string, color: string): string {
     return `<span style="color: ${color}"'>${string}</span>`;

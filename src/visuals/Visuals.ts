@@ -16,7 +16,7 @@ export default class Visuals {
       strokeColor = '';
     }
     if (strokeColor) {
-      const style: CircleStyle = {radius: 0.625, stroke: strokeColor, strokeWidth: 0.075, fill: ''};
+      const style: CircleStyle = {radius: 0.45, stroke: strokeColor, strokeWidth: 0.11, fill: '', opacity: 0.6};
       creep.room.visual.circle(creep.pos, style);
     }
   }

@@ -4,8 +4,14 @@ import TASK_PRIORITIES from '../config/TaskPriorities';
 import Log from '../../console/Log';
 
 import SettlerUtils from '../../settler/utils/SettlerUtils';
+import Settler from '../../settler/Settler';
 
 const TASK_TYPE: TaskType = 'TASK_BOOTSTRAP_PROVINCE';
+
+const PHASE = {
+  MINE: 'MINE',
+  CARRY: 'CARRY'
+};
 
 export default class TaskBootstrapProvince extends Task {
   constructor(provinceName: string) {
@@ -23,7 +29,7 @@ export default class TaskBootstrapProvince extends Task {
     const task: Task = Task.get(taskId);
     const {type} = task;
 
-    if (!SettlerUtils.isFull(creep)) {
+    if (creep.memory.taskPhase === PHASE.MINE) {
       const source = creep.pos.findClosestByPath(FIND_SOURCES);
       if (!source) {
         Log.debug(`[${type}] ${settlerName} No sources found.`);
@@ -32,7 +38,7 @@ export default class TaskBootstrapProvince extends Task {
       if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
         creep.moveTo(source, {visualizePathStyle: {}});
       }
-    } else if (SettlerUtils.hasEnergy(creep)) {
+    } else if (creep.memory.taskPhase === PHASE.CARRY) {
       const spawns = creep.room.find(FIND_MY_SPAWNS);
       if (spawns.length === 0) {
         Log.debug(`[${type}] ${settlerName} No spawns found.`);
@@ -43,7 +49,14 @@ export default class TaskBootstrapProvince extends Task {
         creep.moveTo(spawn, {visualizePathStyle: {}});
       }
     } else {
-      Log.debug(`[${creep.name}] [${type}] Should not went here!`);
+      // TODO REMOVE CIRCULAR
+      Settler.setTaskPhase(settlerName, PHASE.MINE);
+    }
+
+    if (creep.memory.taskPhase === PHASE.MINE && SettlerUtils.isFull(creep)) {
+      Settler.setTaskPhase(settlerName, PHASE.CARRY);
+    } else if (creep.memory.taskPhase === PHASE.CARRY && !SettlerUtils.hasEnergy(creep)) {
+      Settler.setTaskPhase(settlerName, PHASE.MINE);
     }
   }
 }

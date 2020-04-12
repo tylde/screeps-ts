@@ -1,3 +1,5 @@
+import Log from '../console/Log';
+
 export default class Mine {
   id: string;
   districtName: string;
@@ -42,6 +44,25 @@ export default class Mine {
 
   static deleteFromMemory(mineId: string): void {
     delete Memory.mines[mineId];
+  }
+
+  // ===================================================================================================================
+
+  static assignTask(mineId: string, taskId: string): void {
+    const task: Mine = Mine.get(mineId);
+    const newMine: Mine = {...task, assignedTaskId: taskId};
+    Mine.updateInMemory(mineId, newMine);
+  }
+
+  static unassignMine(mineId: string, taskId: string): void {
+    const task: Mine = Mine.get(mineId);
+    const {assignedTaskId} = task;
+    if (taskId !== assignedTaskId) {
+      Log.debug(`Tried to unassign wrong task: ${mineId} (mine assignedTaskId: ${assignedTaskId})`);
+      return;
+    }
+    const newMine: Mine = {...task, assignedTaskId: null};
+    Mine.updateInMemory(mineId, newMine);
   }
 
   // ===================================================================================================================
