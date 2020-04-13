@@ -18,4 +18,10 @@ export default class QuarryHandler {
   static delete(quarryId: string): void {
     delete Memory.quarries[quarryId];
   }
+
+  static setProvinceName(quarryId: string, setProvinceName: string): void {
+    const quarry: QuarryMemory = QuarryHandler.get(quarryId);
+    const updatedQuarry: QuarryMemory = {...quarry, provinceName: setProvinceName};
+    QuarryHandler.update(quarryId, updatedQuarry);
+  }
 }

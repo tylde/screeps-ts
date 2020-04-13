@@ -18,4 +18,12 @@ export default class DistrictHandler {
   static delete(districtName: string): void {
     delete Memory.rooms[districtName];
   }
+
+  // ===================================================================================================================
+
+  static setProvinceName(mineId: string, type: DistrictType): void {
+    const mine: RoomMemory = DistrictHandler.get(mineId);
+    const updatedDistrict: RoomMemory = {...mine, type};
+    DistrictHandler.update(mineId, updatedDistrict);
+  }
 }

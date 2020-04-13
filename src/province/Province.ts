@@ -7,7 +7,7 @@ import Garrison from '../garrison/Garrison';
 import Settler from '../settler/Settler';
 
 import MinersGuild from '../guilds/minig/MinersGuild';
-import PioneersGuild from '../guilds/minig/PioneersGuild';
+import PioneersGuild from '../guilds/pioneer/PioneersGuild';
 
 import ProvinceHandler from './ProvinceHandler';
 import SettlerHandler from '../settler/SettlerHandler';

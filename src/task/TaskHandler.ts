@@ -25,8 +25,8 @@ export default class TaskHandler {
 
   static assignSettler(taskId: string, settlerName: string): void {
     const task: TaskMemory = TaskHandler.get(taskId);
-    const newTask: TaskMemory = {...task, assignedSettlerName: settlerName};
-    TaskHandler.update(taskId, newTask);
+    const updatedTask: TaskMemory = {...task, assignedSettlerName: settlerName};
+    TaskHandler.update(taskId, updatedTask);
   }
 
   static unassignTask(taskId: string, settlerName: string): void {
@@ -36,7 +36,7 @@ export default class TaskHandler {
       Log.debug(`Tried to unassign wrong settler: ${taskId} (task assignedSettler: ${assignedSettlerName})`);
       return;
     }
-    const newTask: TaskMemory = {...task, assignedSettlerName: null};
-    TaskHandler.update(taskId, newTask);
+    const updatedTask: TaskMemory = {...task, assignedSettlerName: null};
+    TaskHandler.update(taskId, updatedTask);
   }
 }

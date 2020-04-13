@@ -14,28 +14,6 @@ export default class Garrison implements SpawnMemory {
 
   // ===================================================================================================================
 
-  static get(garrisonName: string): Garrison {
-    return Memory.spawns[garrisonName];
-  }
-
-  static initGarrisons(): void {
-    Memory.spawns = {};
-  }
-
-  static addToMemory(garrisonName: string, garrison: Garrison): void {
-    Memory.spawns = {...Memory.spawns, [garrisonName]: garrison};
-  }
-
-  static updateInMemory(garrisonName: string, garrison: Garrison): void {
-    Memory.spawns[garrisonName] = garrison;
-  }
-
-  static deleteFromMemory(garrisonName: string): void {
-    delete Memory.spawns[garrisonName];
-  }
-
-  // ===================================================================================================================
-
   static hasPlayerGarrisons(): boolean {
     return Object.keys(Game.spawns).length > 0;
   }

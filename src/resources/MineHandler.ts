@@ -23,10 +23,16 @@ export default class MineHandler {
 
   // ===================================================================================================================
 
+  static setProvinceName(mineId: string, setProvinceName: string): void {
+    const mine: MineMemory = MineHandler.get(mineId);
+    const updatedMine: MineMemory = {...mine, provinceName: setProvinceName};
+    MineHandler.update(mineId, updatedMine);
+  }
+
   static assignTask(mineId: string, taskId: string): void {
     const mine: MineMemory = MineHandler.get(mineId);
-    const newMine: MineMemory = {...mine, assignedTaskId: taskId};
-    MineHandler.update(mineId, newMine);
+    const updatedMine: MineMemory = {...mine, assignedTaskId: taskId};
+    MineHandler.update(mineId, updatedMine);
   }
 
   static unassignTask(mineId: string, taskId: string): void {
@@ -36,7 +42,7 @@ export default class MineHandler {
       Log.debug(`Tried to unassign wrong task: ${mineId} (mine assignedTaskId: ${assignedTaskId})`);
       return;
     }
-    const newMine: MineMemory = {...mine, assignedTaskId: null};
-    MineHandler.update(mineId, newMine);
+    const updatedMine: MineMemory = {...mine, assignedTaskId: null};
+    MineHandler.update(mineId, updatedMine);
   }
 }

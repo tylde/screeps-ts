@@ -25,32 +25,32 @@ export default class SettlerHandler {
 
   static setProvinceName(settlerName: string, provinceName: string): void {
     const settler: CreepMemory = SettlerHandler.get(settlerName);
-    const newSettler: CreepMemory = {...settler, provinceName};
-    SettlerHandler.update(settlerName, newSettler);
+    const updatedSettler: CreepMemory = {...settler, provinceName};
+    SettlerHandler.update(settlerName, updatedSettler);
   }
 
   static setLastHitPoints(settlerName: string, hitPoints: number): void {
     const settler: CreepMemory = SettlerHandler.get(settlerName);
-    const newSettler: CreepMemory = {...settler, lastHitPoints: hitPoints};
-    SettlerHandler.update(settlerName, newSettler);
+    const updatedSettler: CreepMemory = {...settler, lastHitPoints: hitPoints};
+    SettlerHandler.update(settlerName, updatedSettler);
   }
 
   static setTaskPhase(settlerName: string, taskPhase: string): void {
     const settler: CreepMemory = SettlerHandler.get(settlerName);
-    const newSettler: CreepMemory = {...settler, taskPhase};
-    SettlerHandler.update(settlerName, newSettler);
+    const updatedSettler: CreepMemory = {...settler, taskPhase};
+    SettlerHandler.update(settlerName, updatedSettler);
   }
 
   static unsetTaskPhase(settlerName: string): void {
     const settler: CreepMemory = SettlerHandler.get(settlerName);
-    const newSettler: CreepMemory = {...settler, taskPhase: null};
-    SettlerHandler.update(settlerName, newSettler);
+    const updatedSettler: CreepMemory = {...settler, taskPhase: null};
+    SettlerHandler.update(settlerName, updatedSettler);
   }
 
   static assignTask(settlerName: string, taskId: string): void {
     const settler: CreepMemory = SettlerHandler.get(settlerName);
-    const newSettler: CreepMemory = {...settler, assignedTaskId: taskId};
-    SettlerHandler.update(settlerName, newSettler);
+    const updatedSettler: CreepMemory = {...settler, assignedTaskId: taskId};
+    SettlerHandler.update(settlerName, updatedSettler);
   }
 
   static unassignTask(settlerName: string, taskId: string): void {
@@ -60,7 +60,7 @@ export default class SettlerHandler {
       Log.debug(`Tried to unassign wrong task: ${taskId} (creeps assignedTask: ${assignedTaskId})`);
       return;
     }
-    const newSettler: CreepMemory = {...settler, assignedTaskId: null};
-    SettlerHandler.update(settlerName, newSettler);
+    const updatedSettler: CreepMemory = {...settler, assignedTaskId: null};
+    SettlerHandler.update(settlerName, updatedSettler);
   }
 }

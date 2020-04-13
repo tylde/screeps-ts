@@ -28,37 +28,20 @@ export default class District implements RoomMemory {
 
     sources.forEach((source: Source) => {
       const mineElement: Mine = new Mine(source);
-      MineHandler.add(source.id, mineElement);
+      const mineId = source.id;
+      MineHandler.add(mineId, mineElement);
+      if (type === 'DISTRICT_CAPITAL') {
+        MineHandler.setProvinceName(mineId, provinceName);
+      }
     });
     minerals.forEach((mineral: Mineral) => {
       const {id, pos: {x, y}, mineralType, density} = mineral;
       const position: ElementPosition = {x, y, roomName: districtName};
       const quarryElement: Quarry = new Quarry(id, districtName, position, mineralType, density);
       QuarryHandler.add(id, quarryElement);
+      if (type === 'DISTRICT_CAPITAL') {
+        QuarryHandler.setProvinceName(id, provinceName);
+      }
     });
   }
-
-  // ===================================================================================================================
-
-  static get(districtName: string): District {
-    return Memory.rooms[districtName];
-  }
-
-  static initDistricts(): void {
-    Memory.rooms = {};
-  }
-
-  static addToMemory(districtName: string, district: District): void {
-    Memory.rooms = {...Memory.rooms, [districtName]: district};
-  }
-
-  static updateInMemory(districtName: string, district: District): void {
-    Memory.rooms[districtName] = district;
-  }
-
-  static deleteFromMemory(districtName: string): void {
-    delete Memory.rooms[districtName];
-  }
-
-  // ===================================================================================================================
 }
