@@ -1,45 +1,45 @@
 import Log from '../console/Log';
 
-import District from '../district/District';
-import Garrison from '../garrison/Garrison';
-import Mine from '../resources/Mine';
-import Province from '../province/Province';
-import Quarry from '../resources/Quarry';
-import Settler from '../settler/Settler';
-import Task from '../task/Task';
-import Directive from '../directives/Directive';
+import DirectiveHandler from '../directives/DirectiveHandler';
+import DistrictHandler from '../district/DistrictHandler';
+import GarrisonHandler from '../garrison/GarrisonHandler';
+import MineHandler from '../resources/MineHandler';
+import ProvinceHandler from '../province/ProvinceHandler';
+import QuarryHandler from '../resources/QuarryHandler';
+import SettlerHandler from '../settler/SettlerHandler';
+import TaskHandler from '../task/TaskHandler';
 
 class GarbageCollector {
   static deleteDistrict(districtName: string): void {
-    const {provinceName, mines, quarry} = District.get(districtName);
-    Province.deleteDistrict(provinceName, districtName);
-    mines.forEach(mineId => Mine.deleteFromMemory(mineId));
-    Quarry.deleteFromMemory(quarry);
-    District.deleteFromMemory(districtName);
+    const {provinceName, mines, quarry} = DistrictHandler.get(districtName);
+    ProvinceHandler.deleteDistrict(provinceName, districtName);
+    mines.forEach(mineId => MineHandler.delete(mineId));
+    QuarryHandler.delete(quarry);
+    DistrictHandler.delete(districtName);
   }
 
   static deleteSettler(settlerName: string): void {
-    const {provinceName, assignedTaskId} = Settler.get(settlerName);
-    Province.deleteSettler(provinceName, settlerName);
+    const {provinceName, assignedTaskId} = SettlerHandler.get(settlerName);
+    ProvinceHandler.deleteSettler(provinceName, settlerName);
     if (assignedTaskId) {
-      Task.unassignTask(assignedTaskId, settlerName);
+      TaskHandler.unassignTask(assignedTaskId, settlerName);
     }
-    Settler.deleteFromMemory(settlerName);
+    SettlerHandler.delete(settlerName);
   }
 
   static deleteGarrison(garrisonName: string): void {
-    const {provinceName} = Garrison.get(garrisonName);
-    Province.deleteGarrison(provinceName, garrisonName);
-    Garrison.deleteFromMemory(garrisonName);
+    const {provinceName} = GarrisonHandler.get(garrisonName);
+    ProvinceHandler.deleteGarrison(provinceName, garrisonName);
+    GarrisonHandler.delete(garrisonName);
   }
 
   static deleteTask(taskId: string): void {
-    const {assignedSettlerName, provinceName} = Task.get(taskId);
+    const {assignedSettlerName, provinceName} = TaskHandler.get(taskId);
     if (assignedSettlerName) {
-      Settler.unassignTask(assignedSettlerName, taskId);
+      SettlerHandler.unassignTask(assignedSettlerName, taskId);
     }
-    Province.deleteTask(provinceName, taskId);
-    Task.deleteFromMemory(taskId);
+    ProvinceHandler.deleteTask(provinceName, taskId);
+    TaskHandler.delete(taskId);
   }
 
   static cleanDistricts(): void {
@@ -118,16 +118,16 @@ class GarbageCollector {
   static delete(): void {
     delete Memory.realm;
 
-    Province.initProvinces();
-    District.initDistricts();
-    Settler.initSettlers();
-    Garrison.initGarrisons();
+    ProvinceHandler.init();
+    DistrictHandler.init();
+    SettlerHandler.init();
+    GarrisonHandler.init();
 
-    Mine.initMines();
-    Quarry.initQuarries();
+    MineHandler.init();
+    QuarryHandler.init();
 
-    Task.initTasks();
-    Directive.initDirectives();
+    TaskHandler.init();
+    DirectiveHandler.init();
   }
 }
 

@@ -1,7 +1,10 @@
 import Mine from '../resources/Mine';
 import Quarry from '../resources/Quarry';
 
-export default class District {
+import MineHandler from '../resources/MineHandler';
+import QuarryHandler from '../resources/QuarryHandler';
+
+export default class District implements RoomMemory {
   name: string;
   provinceName: string;
   type: DistrictType;
@@ -25,13 +28,13 @@ export default class District {
 
     sources.forEach((source: Source) => {
       const mineElement: Mine = new Mine(source);
-      Mine.addToMemory(source.id, mineElement);
+      MineHandler.add(source.id, mineElement);
     });
     minerals.forEach((mineral: Mineral) => {
       const {id, pos: {x, y}, mineralType, density} = mineral;
       const position: ElementPosition = {x, y, roomName: districtName};
       const quarryElement: Quarry = new Quarry(id, districtName, position, mineralType, density);
-      Quarry.addToMemory(id, quarryElement);
+      QuarryHandler.add(id, quarryElement);
     });
   }
 

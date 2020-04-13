@@ -1,10 +1,11 @@
+import Log from '../../console/Log';
+
 import Task from '../Task';
 import TASK_PRIORITIES from '../config/TaskPriorities';
 
-import Log from '../../console/Log';
-
+import SettlerHandler from '../../settler/SettlerHandler';
 import SettlerUtils from '../../settler/utils/SettlerUtils';
-import Settler from '../../settler/Settler';
+import TaskHandler from '../TaskHandler';
 
 const TASK_TYPE: TaskType = 'TASK_PIONEER_PROVINCE';
 
@@ -26,7 +27,7 @@ export default class TaskPioneerProvince extends Task {
 
   static run(creep: Creep, taskId: string): void {
     const {name: settlerName} = creep;
-    const task: Task = Task.get(taskId);
+    const task: Task = TaskHandler.get(taskId);
     const {type} = task;
 
     if (creep.memory.taskPhase === PHASE.MINE) {
@@ -49,14 +50,13 @@ export default class TaskPioneerProvince extends Task {
         creep.moveTo(spawn, {visualizePathStyle: {}});
       }
     } else {
-      // TODO REMOVE CIRCULAR
-      Settler.setTaskPhase(settlerName, PHASE.MINE);
+      SettlerHandler.setTaskPhase(settlerName, PHASE.MINE);
     }
 
     if (creep.memory.taskPhase === PHASE.MINE && SettlerUtils.isFull(creep)) {
-      Settler.setTaskPhase(settlerName, PHASE.CARRY);
+      SettlerHandler.setTaskPhase(settlerName, PHASE.CARRY);
     } else if (creep.memory.taskPhase === PHASE.CARRY && !SettlerUtils.hasEnergy(creep)) {
-      Settler.setTaskPhase(settlerName, PHASE.MINE);
+      SettlerHandler.setTaskPhase(settlerName, PHASE.MINE);
     }
   }
 }

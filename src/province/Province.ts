@@ -1,16 +1,19 @@
 import Log from '../console/Log';
 
-import ArrayHelper from '../helpers/ArrayHelper';
+import SettlerPatterns from '../settler/config/SettlerPatterns';
 
+import Capital from './Capital';
 import Garrison from '../garrison/Garrison';
 import Settler from '../settler/Settler';
-import Capital from './Capital';
-import Task from '../task/Task';
-import SettlerPatterns from '../settler/config/SettlerPatterns';
+
 import MinersGuild from '../guilds/minig/MinersGuild';
 import PioneersGuild from '../guilds/minig/PioneersGuild';
 
-export default class Province {
+import ProvinceHandler from './ProvinceHandler';
+import SettlerHandler from '../settler/SettlerHandler';
+import TaskHandler from '../task/TaskHandler';
+
+export default class Province implements ProvinceMemory {
   name: string;
   capitalName: string;
   garrisonsNames: string[];
@@ -46,183 +49,16 @@ export default class Province {
 
   // ===================================================================================================================
 
-  static get(provinceName: string): Province {
-    return Memory.provinces[provinceName];
-  }
-
-  static initProvinces(): void {
-    Memory.provinces = {};
-  }
-
-  static addToMemory(provinceName: string, province: Province): void {
-    Memory.provinces = {...Memory.provinces, [provinceName]: province};
-  }
-
-  static updateInMemory(provinceName: string, province: Province): void {
-    Memory.provinces[provinceName] = province;
-  }
-
-  static deleteFromMemory(provinceName: string): void {
-    delete Memory.provinces[provinceName];
-  }
-
-  // ===================================================================================================================
-
-  static addDistrict(provinceName: string, districtName: string): void {
-    const province = Province.get(provinceName);
-    const {districtsNames} = province;
-    const newDistricts: string[] = [...districtsNames, districtName];
-    Province.updateInMemory(provinceName, {...province, districtsNames: newDistricts});
-  }
-
-  static deleteDistrict(provinceName: string, districtName: string): void {
-    const province = Province.get(provinceName);
-    const {districtsNames} = province;
-
-    const districtIndex: number = districtsNames.findIndex((element) => element === districtName);
-    if (districtIndex > -1) {
-      const newDistricts: string[] = ArrayHelper.removeElementFromIndex(districtsNames, districtIndex);
-      Province.updateInMemory(provinceName, {...province, districtsNames: newDistricts});
-    } else {
-      Log.debug(`District ${districtName} not found in province ${provinceName} while deleting`);
-    }
-  }
-
-  static hasDistrict(provinceName: string, districtName: string): boolean {
-    const province = Province.get(provinceName);
-    const {districtsNames} = province;
-    const districtIndex: number = districtsNames.findIndex((element) => element === districtName);
-    return districtIndex > -1;
-  }
-
-  static getDistrictsAmount(provinceName: string): number {
-    const province = Province.get(provinceName);
-    const {districtsNames} = province;
-    return districtsNames.length;
-  }
-
-  static addGarrison(provinceName: string, garrisonName: string): void {
-    const province = Province.get(provinceName);
-    const {garrisonsNames} = province;
-    const newGarrisons: string[] = [...garrisonsNames, garrisonName];
-    Province.updateInMemory(provinceName, {...province, garrisonsNames: newGarrisons});
-  }
-
-  static deleteGarrison(provinceName: string, garrisonName: string): void {
-    const province = Province.get(provinceName);
-    const {garrisonsNames} = province;
-
-    const garrisonIndex: number = garrisonsNames.findIndex((element) => element === garrisonName);
-    if (garrisonIndex > -1) {
-      const newGarrisons: string[] = ArrayHelper.removeElementFromIndex(garrisonsNames, garrisonIndex);
-      Province.updateInMemory(provinceName, {...province, garrisonsNames: newGarrisons});
-    } else {
-      Log.debug(`Garrison ${garrisonName} not found in province ${provinceName} while deleting`);
-    }
-  }
-
-  static hasGarrison(provinceName: string, garrisonName: string): boolean {
-    const province = Province.get(provinceName);
-    const {garrisonsNames} = province;
-    const garrisonIndex: number = garrisonsNames.findIndex((element) => element === garrisonName);
-    return garrisonIndex > -1;
-  }
-
-  static getGarrisonsAmount(provinceName: string): number {
-    const province = Province.get(provinceName);
-    const {garrisonsNames} = province;
-    return garrisonsNames.length;
-  }
-
-  static addSettler(provinceName: string, settlerName: string): void {
-    const province = Province.get(provinceName);
-    const {settlersNames} = province;
-    const newSettlers: string[] = [...settlersNames, settlerName];
-    Province.updateInMemory(provinceName, {...province, settlersNames: newSettlers});
-  }
-
-  static deleteSettler(provinceName: string, settlerName: string): void {
-    const province = Province.get(provinceName);
-
-    if (!province) {
-      Log.debug(`No province found for provinceName: ${provinceName} and settlerName: ${settlerName}`);
-      return;
-    }
-
-    const {settlersNames} = province;
-
-    const settlerIndex: number = settlersNames.findIndex((element) => element === settlerName);
-    if (settlerIndex > -1) {
-      const newSettlers: string[] = ArrayHelper.removeElementFromIndex(settlersNames, settlerIndex);
-      Province.updateInMemory(provinceName, {...province, settlersNames: newSettlers});
-    } else {
-      Log.debug(`Settler ${settlerName} not found in province ${provinceName} while deleting`);
-    }
-  }
-
-  static hasSettler(provinceName: string, settlerName: string): boolean {
-    const province = Province.get(provinceName);
-    const {settlersNames} = province;
-    const settlerIndex: number = settlersNames.findIndex((element) => element === settlerName);
-    return settlerIndex > -1;
-  }
-
-  static getSettlersAmount(provinceName: string, settlerRole?: SettlerRole): number {
-    const province = Province.get(provinceName);
-    const {settlersNames} = province;
-
-    if (!settlerRole) {
-      return settlersNames.length;
-    }
-
-    const filteredSettlersByRole = settlersNames.filter((settlerName) => {
-      const settler = Memory.creeps[settlerName];
-
-      if (!settler) {
-        return false;
-      }
-
-      const {role} = settler;
-      return settlerRole === role;
-    });
-
-    return filteredSettlersByRole.length;
-  }
-
-  static addTask(provinceName: string, taskName: string): void {
-    const province = Province.get(provinceName);
-    const {tasksIds} = province;
-    const newTasks: string[] = [...tasksIds, taskName];
-    Province.updateInMemory(provinceName, {...province, tasksIds: newTasks});
-  }
-
-  static deleteTask(provinceName: string, taskName: string): void {
-    const province = Province.get(provinceName);
-    const {tasksIds} = province;
-
-    const taskIndex: number = tasksIds.findIndex((element) => element === taskName);
-    if (taskIndex > -1) {
-      const newTasks: string[] = ArrayHelper.removeElementFromIndex(tasksIds, taskIndex);
-      Province.updateInMemory(provinceName, {...province, tasksIds: newTasks});
-    } else {
-      Log.debug(`Task ${taskName} not found in province ${provinceName} while deleting`);
-    }
-  }
-
-  static calculateNeededMiners(): number {
-    return 0;
-  }
-
   static manageTasks(provinceName: string): void {
     PioneersGuild.manageTasks(provinceName);
     MinersGuild.manageTasks(provinceName);
   }
 
   static assignTasks(provinceName: string): void {
-    const province = Province.get(provinceName);
+    const province = ProvinceHandler.get(provinceName);
     const {settlersNames, tasksIds} = province;
 
-    const unassignedTasks = tasksIds.map(taskId => Task.get(taskId))
+    const unassignedTasks = tasksIds.map(taskId => TaskHandler.get(taskId))
       .filter(task => task.assignedSettlerName === null);
 
     // TODO CHECK
@@ -230,15 +66,15 @@ export default class Province {
 
     unassignedTasks.forEach((task) => {
       const {assignableSettlers, id: taskId} = task;
-      const unassignedSettlers = settlersNames.map(settlerName => Settler.get(settlerName))
+      const unassignedSettlers = settlersNames.map(settlerName => SettlerHandler.get(settlerName))
         .filter(settler => settler.assignedTaskId === null)
         .filter(settler => assignableSettlers.includes(settler.role));
 
       const settlerToAssign = unassignedSettlers[0];
       if (settlerToAssign) {
         const {name: settlerName} = settlerToAssign;
-        Settler.assignTask(settlerName, taskId);
-        Task.assignSettler(taskId, settlerName);
+        SettlerHandler.assignTask(settlerName, taskId);
+        TaskHandler.assignSettler(taskId, settlerName);
       }
     });
   }
@@ -246,7 +82,7 @@ export default class Province {
   static calculateCreepsToSpawn(
     provinceName: string
   ): {body: BodyPartConstant[]; role: SettlerRole}[] {
-    const province = Province.get(provinceName);
+    const province = ProvinceHandler.get(provinceName);
     const {capitalName, tasksIds} = province;
     const capitalRoom: Room = Game.rooms[capitalName];
 
@@ -255,7 +91,7 @@ export default class Province {
       return [];
     }
 
-    const unassignedTasks = tasksIds.map((taskId) => Task.get(taskId))
+    const unassignedTasks = tasksIds.map((taskId) => TaskHandler.get(taskId))
       .filter(task => task.assignedSettlerName === null);
 
     if (unassignedTasks.length === 0) {
@@ -281,7 +117,7 @@ export default class Province {
   }
 
   static spawnCreep(provinceName: string): void {
-    const province = Province.get(provinceName);
+    const province = ProvinceHandler.get(provinceName);
     const {garrisonsNames, capitalName} = province;
 
     const capitalRoom: Room = Game.rooms[capitalName];
@@ -301,7 +137,7 @@ export default class Province {
         const spawnResult: ScreepsReturnCode = Garrison
           .spawnSettler(provinceName, garrisonName, settlerName, body, role);
         if (spawnResult === OK) {
-          Province.addSettler(provinceName, settlerName);
+          ProvinceHandler.addSettler(provinceName, settlerName);
           creepsToSpawn.shift();
         }
       }
@@ -309,13 +145,13 @@ export default class Province {
   }
 
   static manageSpawn(provinceName: string): void {
-    // const province = Province.get(provinceName);
+    // const province = ProvinceHandler.get(provinceName);
 
     Province.spawnCreep(provinceName);
   }
 
   static manageSettlers(provinceName: string): void {
-    const province = Province.get(provinceName);
+    const province = ProvinceHandler.get(provinceName);
     const {settlersNames} = province;
     settlersNames.forEach((settlerName) => {
       Settler.run(settlerName);
@@ -323,7 +159,7 @@ export default class Province {
   }
 
   static run(provinceName: string): void {
-    const province = Province.get(provinceName);
+    const province = ProvinceHandler.get(provinceName);
 
     if (!province) {
       Log.error(`No province found with name: ${provinceName}`);

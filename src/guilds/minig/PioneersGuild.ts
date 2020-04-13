@@ -1,14 +1,18 @@
-import Capital from '../../province/Capital';
 import Log from '../../console/Log';
+
+import Capital from '../../province/Capital';
 import DistrictUtils from '../../district/utils/DistrictUtils';
 import Task from '../../task/Task';
 import TaskUtils from '../../task/utils/TaskUtils';
+
 import TaskPioneerProvince from '../../task/types/TaskPioneerProvince';
-import Province from '../../province/Province';
+
+import ProvinceHandler from '../../province/ProvinceHandler';
+import TaskHandler from '../../task/TaskHandler';
 
 export default class PioneersGuild {
   static manageTasks(provinceName: string): void {
-    const province = Province.get(provinceName);
+    const province = ProvinceHandler.get(provinceName);
     const {capitalName, tasksIds} = province;
     const capitalRoom = Capital.getCapitalRoom(capitalName);
     if (!capitalRoom) {
@@ -21,8 +25,8 @@ export default class PioneersGuild {
       return;
     }
 
-    const minersAmount = Province.getSettlersAmount(provinceName, 'SETTLER_MINER');
-    const carriersAmount = Province.getSettlersAmount(provinceName, 'SETTLER_CARRIER');
+    const minersAmount = ProvinceHandler.getSettlersAmount(provinceName, 'SETTLER_MINER');
+    const carriersAmount = ProvinceHandler.getSettlersAmount(provinceName, 'SETTLER_CARRIER');
     const storedEnergyInCapital = DistrictUtils.getStorageEnergy(capitalRoom);
 
     const {level: controllerLevel} = controller;
@@ -32,15 +36,15 @@ export default class PioneersGuild {
     }
 
     const currentTasks: Task[] = tasksIds
-      .map((taskId) => Task.get(taskId))
+      .map((taskId) => TaskHandler.get(taskId))
       .filter(task => TaskUtils.isType(task, 'TASK_PIONEER_PROVINCE'));
 
     for (let i = currentTasks.length; i < requiredTasks; i++) {
       const task = new TaskPioneerProvince(provinceName);
       const taskId = task.id;
 
-      Task.addToMemory(taskId, task);
-      Province.addTask(provinceName, taskId);
+      TaskHandler.add(taskId, task);
+      ProvinceHandler.addTask(provinceName, taskId);
     }
   }
 }

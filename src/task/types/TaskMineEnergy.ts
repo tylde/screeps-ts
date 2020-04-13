@@ -1,10 +1,13 @@
+import Log from '../../console/Log';
+
 import Task from '../Task';
 import TASK_PRIORITIES from '../config/TaskPriorities';
 
-import Mine from '../../resources/Mine';
 import SettlerCommands from '../../settler/utils/SettlerCommands';
-import Log from '../../console/Log';
-import Settler from '../../settler/Settler';
+
+import MineHandler from '../../resources/MineHandler';
+import SettlerHandler from '../../settler/SettlerHandler';
+import TaskHandler from '../TaskHandler';
 
 const TASK_TYPE: TaskType = 'TASK_MINE_ENERGY';
 
@@ -28,7 +31,7 @@ export default class TaskMineEnergy extends Task {
 
   static run(creep: Creep, taskId: string): void {
     const {name: settlerName} = creep;
-    const task: Task = Task.get(taskId);
+    const task: Task = TaskHandler.get(taskId);
     const {mineId} = task.data;
 
     if (!mineId) {
@@ -36,7 +39,9 @@ export default class TaskMineEnergy extends Task {
       return;
     }
 
-    const {position: {roomName: mineRoomName, x: minePositionX, y: minePositionY}, containerId} = Mine.get(mineId);
+    const {
+      position: {roomName: mineRoomName, x: minePositionX, y: minePositionY}, containerId
+    } = MineHandler.get(mineId);
     const {roomName: creepRoomName, x: creepPositionX, y: creepPositionY} = creep.pos;
 
     if (creep.memory.taskPhase === PHASE.MOVE) {
@@ -52,7 +57,7 @@ export default class TaskMineEnergy extends Task {
       SettlerCommands.mine(creep, mineId);
     } else {
       // TODO REMOVE CIRCULAR
-      Settler.setTaskPhase(settlerName, PHASE.MOVE);
+      SettlerHandler.setTaskPhase(settlerName, PHASE.MOVE);
     }
 
     if (creepRoomName !== mineRoomName) {
@@ -67,11 +72,11 @@ export default class TaskMineEnergy extends Task {
         if (container) {
           const {x: containerPositionX, y: containerPositionY} = container.pos;
           if (containerPositionX === creepPositionX && containerPositionY === creepPositionY) {
-            Settler.setTaskPhase(settlerName, PHASE.MINE);
+            SettlerHandler.setTaskPhase(settlerName, PHASE.MINE);
           }
         }
       } else if (creep.pos.inRangeTo(minePositionX, minePositionY, 1)) {
-        Settler.setTaskPhase(settlerName, PHASE.MINE);
+        SettlerHandler.setTaskPhase(settlerName, PHASE.MINE);
       }
     }
   }

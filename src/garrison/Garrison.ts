@@ -5,7 +5,7 @@ import Settler from '../settler/Settler';
 
 import SETTLER_NAMES from '../settler/config/SettlerNames';
 
-export default class Garrison {
+export default class Garrison implements SpawnMemory {
   provinceName: string;
 
   constructor(provinceName: string) {
@@ -63,22 +63,22 @@ export default class Garrison {
 
   static translateSpawnResult(spawnResult: ScreepsReturnCode): string {
     switch (spawnResult) {
-    case 0:
-      return 'The operation has been scheduled successfully.';
-    case -1:
-      return 'You are not the owner of this spawn.';
-    case -3:
-      return 'There is a creep with the same name already.';
-    case -4:
-      return 'The spawn is already in process of spawning another creep.';
-    case -6:
-      return 'The spawn and its extensions contain not enough energy to create a creep with the given body.';
-    case -10:
-      return 'Body is not properly described or name was not provided.';
-    case -14:
-      return 'Your Room Controller level is insufficient to use this spawn.';
-    default:
-      return `UNKNOWN_CODE - ${spawnResult}`;
+      case 0:
+        return 'The operation has been scheduled successfully.';
+      case -1:
+        return 'You are not the owner of this spawn.';
+      case -3:
+        return 'There is a creep with the same name already.';
+      case -4:
+        return 'The spawn is already in process of spawning another creep.';
+      case -6:
+        return 'The spawn and its extensions contain not enough energy to create a creep with the given body.';
+      case -10:
+        return 'Body is not properly described or name was not provided.';
+      case -14:
+        return 'Your Room Controller level is insufficient to use this spawn.';
+      default:
+        return `UNKNOWN_CODE - ${spawnResult}`;
     }
   }
 

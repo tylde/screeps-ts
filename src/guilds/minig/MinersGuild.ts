@@ -1,13 +1,17 @@
-import Province from '../../province/Province';
-import Capital from '../../province/Capital';
 import Log from '../../console/Log';
+
+import Capital from '../../province/Capital';
 import Mine from '../../resources/Mine';
+
 import TaskMineEnergy from '../../task/types/TaskMineEnergy';
-import Task from '../../task/Task';
+
+import MineHandler from '../../resources/MineHandler';
+import ProvinceHandler from '../../province/ProvinceHandler';
+import TaskHandler from '../../task/TaskHandler';
 
 export default class MinersGuild {
   static manageTasks(provinceName: string): void {
-    const province = Province.get(provinceName);
+    const province = ProvinceHandler.get(provinceName);
     const {capitalName, minesIds} = province;
     const capitalRoom = Capital.getCapitalRoom(capitalName);
     if (!capitalRoom) {
@@ -20,16 +24,16 @@ export default class MinersGuild {
       return;
     }
 
-    const unassignedMines: Mine[] = minesIds.map(mineId => Mine.get(mineId))
+    const unassignedMines: Mine[] = minesIds.map(mineId => MineHandler.get(mineId))
       .filter(mine => mine.assignedTaskId === null);
 
     unassignedMines.forEach(unassignedMine => {
       const {id: mineId} = unassignedMine;
       const task = new TaskMineEnergy(provinceName, mineId);
       const taskId = task.id;
-      Province.addTask(provinceName, taskId);
-      Task.addToMemory(taskId, task);
-      Mine.assignTask(mineId, taskId);
+      ProvinceHandler.addTask(provinceName, taskId);
+      TaskHandler.add(taskId, task);
+      MineHandler.assignTask(mineId, taskId);
     });
   }
 }

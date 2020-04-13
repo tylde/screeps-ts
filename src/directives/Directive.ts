@@ -1,4 +1,4 @@
-export default class Directive {
+export default class Directive implements DirectiveMemory {
   id: string;
   type: string;
   priority: number;
@@ -8,28 +8,4 @@ export default class Directive {
     this.type = type;
     this.priority = priority;
   }
-
-  // ===================================================================================================================
-
-  static get(directiveId: string): Directive {
-    return Memory.directives[directiveId];
-  }
-
-  static initDirectives(): void {
-    Memory.directives = {};
-  }
-
-  static addToMemory(directiveId: string, province: Directive): void {
-    Memory.directives = {...Memory.directives, [directiveId]: province};
-  }
-
-  static updateInMemory(directiveId: string, province: Directive): void {
-    Memory.directives[directiveId] = province;
-  }
-
-  static deleteFromMemory(directiveId: string): void {
-    delete Memory.provinces[directiveId];
-  }
-
-  // ===================================================================================================================
 }

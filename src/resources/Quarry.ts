@@ -1,4 +1,4 @@
-export default class Quarry {
+export default class Quarry implements QuarryMemory {
   id: string;
   districtName: string;
   position: ElementPosition;
@@ -24,28 +24,4 @@ export default class Quarry {
     this.containerId = null;
     this.linkId = null;
   }
-
-  // ===================================================================================================================
-
-  static get(quaryName: string): Quarry {
-    return Memory.quarries[quaryName];
-  }
-
-  static initQuarries(): void {
-    Memory.quarries = {};
-  }
-
-  static addToMemory(quarryId: string, quarry: Quarry): void {
-    Memory.quarries = {...Memory.quarries, [quarryId]: quarry};
-  }
-
-  static updateInMemory(quarryId: string, quarry: Quarry): void {
-    Memory.quarries[quarryId] = quarry;
-  }
-
-  static deleteFromMemory(quarryId: string): void {
-    delete Memory.quarries[quarryId];
-  }
-
-  // ===================================================================================================================
 }

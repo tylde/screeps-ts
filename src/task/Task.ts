@@ -1,7 +1,9 @@
 import Log from '../console/Log';
 import Utils from '../utils/utils';
 
-export default class Task {
+import TaskHandler from './TaskHandler';
+
+export default class Task implements TaskMemory {
   id: string;
   type: TaskType;
   provinceName: string;
@@ -74,19 +76,19 @@ export default class Task {
   // ===================================================================================================================
 
   static assignSettler(taskId: string, settlerName: string): void {
-    const task: Task = Task.get(taskId);
+    const task: Task = TaskHandler.get(taskId);
     const newTask: Task = {...task, assignedSettlerName: settlerName};
-    Task.updateInMemory(taskId, newTask);
+    TaskHandler.update(taskId, newTask);
   }
 
   static unassignTask(taskId: string, settlerName: string): void {
-    const task: Task = Task.get(taskId);
+    const task: Task = TaskHandler.get(taskId);
     const {assignedSettlerName} = task;
     if (settlerName !== assignedSettlerName) {
       Log.debug(`Tried to unassign wrong settler: ${taskId} (task assignedSettler: ${assignedSettlerName})`);
       return;
     }
     const newTask: Task = {...task, assignedSettlerName: null};
-    Task.updateInMemory(taskId, newTask);
+    TaskHandler.update(taskId, newTask);
   }
 }

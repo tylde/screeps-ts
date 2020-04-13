@@ -1,14 +1,16 @@
+import ArrayHelper from '../helpers/ArrayHelper';
 import Log from '../console/Log';
 
-import ArrayHelper from '../helpers/ArrayHelper';
-
+import District from '../district/District';
 import Garrison from '../garrison/garrison';
 import Province from '../province/province';
-import District from '../district/District';
-import Settler from '../settler/Settler';
-import {DISTRICT_CAPITAL} from '../district/config/DistrictConstants';
 
-export default class Realm {
+import DistrictHandler from '../district/DistrictHandler';
+import GarrisonHandler from '../garrison/GarrisonHandler';
+import ProvinceHandler from '../province/ProvinceHandler';
+import SettlerHandler from '../settler/SettlerHandler';
+
+export default class Realm implements RealmMemory {
   provincesNames: string[];
   initializationTick: number;
 
@@ -61,32 +63,32 @@ export default class Realm {
   }
 
   static initializeProvinces(): void {
-    Province.initProvinces();
+    ProvinceHandler.init();
     Object.entries(Game.spawns).forEach(([garrisonName, spawn], index) => {
       const provinceName = `Province ${index + 1}`;
       const province = new Province(provinceName, spawn);
       const districtName = spawn.room.name;
 
-      const district: District = new District(districtName, provinceName, DISTRICT_CAPITAL);
+      const district: District = new District(districtName, provinceName, 'DISTRICT_CAPITAL');
       const garrison: Garrison = new Garrison(provinceName);
 
       Realm.addProvince(provinceName);
-      Province.addToMemory(provinceName, province);
-      District.addToMemory(districtName, district);
-      Garrison.addToMemory(garrisonName, garrison);
+      ProvinceHandler.add(provinceName, province);
+      DistrictHandler.add(districtName, district);
+      GarrisonHandler.add(garrisonName, garrison);
     });
     Log.success(`Initialized provinces: ${Object.keys(Memory.provinces).length}`);
   }
 
   static initializeDistricts(): void {
     if (!Memory.rooms) {
-      District.initDistricts();
+      DistrictHandler.init();
     }
   }
 
   static initializeSettlers(): void {
     if (!Memory.creeps) {
-      Settler.initSettlers();
+      SettlerHandler.init();
     }
   }
 

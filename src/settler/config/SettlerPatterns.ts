@@ -20,7 +20,9 @@ import * as SETTLER_CONSTANTS from './SettlerConstants';
 //   [SETTLER_CONSTANTS.SETTLER_LORD]: '<TBD>'
 // };
 
-const SETTLER_PATTERNS = {
+type SettlerPatternsType = {[key in SettlerRole]: BodyPartConstant[]};
+
+const SETTLER_PATTERNS: SettlerPatternsType = {
   [SETTLER_CONSTANTS.SETTLER_CARRIER]: [CARRY, MOVE],
   [SETTLER_CONSTANTS.SETTLER_MINER]: [WORK, WORK, MOVE],
   [SETTLER_CONSTANTS.SETTLER_PIONEER]: [CARRY, WORK, MOVE],

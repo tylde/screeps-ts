@@ -1,6 +1,4 @@
-import Log from '../console/Log';
-
-export default class Mine {
+export default class Mine implements MineMemory {
   id: string;
   districtName: string;
   position: ElementPosition;
@@ -24,47 +22,6 @@ export default class Mine {
     this.assignedTaskId = null;
     this.containerId = null;
     this.linkId = null;
-  }
-
-  // ===================================================================================================================
-
-  static get(mineId: string): Mine {
-    return Memory.mines[mineId];
-  }
-
-  static initMines(): void {
-    Memory.mines = {};
-  }
-
-  static addToMemory(mineId: string, mine: Mine): void {
-    Memory.mines = {...Memory.mines, [mineId]: mine};
-  }
-
-  static updateInMemory(mineId: string, mine: Mine): void {
-    Memory.mines[mineId] = mine;
-  }
-
-  static deleteFromMemory(mineId: string): void {
-    delete Memory.mines[mineId];
-  }
-
-  // ===================================================================================================================
-
-  static assignTask(mineId: string, taskId: string): void {
-    const task: Mine = Mine.get(mineId);
-    const newMine: Mine = {...task, assignedTaskId: taskId};
-    Mine.updateInMemory(mineId, newMine);
-  }
-
-  static unassignTask(mineId: string, taskId: string): void {
-    const task: Mine = Mine.get(mineId);
-    const {assignedTaskId} = task;
-    if (taskId !== assignedTaskId) {
-      Log.debug(`Tried to unassign wrong task: ${mineId} (mine assignedTaskId: ${assignedTaskId})`);
-      return;
-    }
-    const newMine: Mine = {...task, assignedTaskId: null};
-    Mine.updateInMemory(mineId, newMine);
   }
 
   // ===================================================================================================================
