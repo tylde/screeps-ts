@@ -61,6 +61,7 @@ interface MineMemory {
   provinceName: string | null;
   assignedTaskId: string | null;
   containerId: string | null;
+  linkId: string | null;
 }
 
 interface QuarryMemory {
@@ -73,6 +74,7 @@ interface QuarryMemory {
   provinceName: string | null;
   assignedTaskId: string | null;
   containerId: string | null;
+  linkId: string | null;
 }
 
 interface CreepMemory {

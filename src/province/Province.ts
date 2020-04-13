@@ -6,13 +6,9 @@ import Garrison from '../garrison/Garrison';
 import Settler from '../settler/Settler';
 import Capital from './Capital';
 import Task from '../task/Task';
-import TaskUtils from '../task/utils/TaskUtils';
-
-import TaskBootstrapProvince from '../task/types/TaskBootstrapProvince';
-import DistrictUtils from '../district/utils/DistrictUtils';
-import Mine from '../resources/Mine';
-import TaskMineEnergy from '../task/types/TaskMineEnergy';
 import SettlerPatterns from '../settler/config/SettlerPatterns';
+import MinersGuild from '../guilds/minig/MinersGuild';
+import PioneersGuild from '../guilds/minig/PioneersGuild';
 
 export default class Province {
   name: string;
@@ -217,73 +213,9 @@ export default class Province {
     return 0;
   }
 
-  static manageBootstrapingTasks(provinceName: string): void {
-    const province = Province.get(provinceName);
-    const {capitalName, tasksIds} = province;
-    const capitalRoom = Capital.getCapitalRoom(capitalName);
-    if (!capitalRoom) {
-      Log.debug(`[${provinceName}] Cannot find capitalRoom for capitalName: ${capitalName}`);
-      return;
-    }
-    const controller = capitalRoom.controller;
-    if (!controller) {
-      Log.debug(`[${provinceName}] Cannot find controller for capitalName: ${capitalName}`);
-      return;
-    }
-
-    const minersAmount = Province.getSettlersAmount(provinceName, 'SETTLER_MINER');
-    const carriersAmount = Province.getSettlersAmount(provinceName, 'SETTLER_CARRIER');
-    const storedEnergyInCapital = DistrictUtils.getStorageEnergy(capitalRoom);
-
-    const {level: controllerLevel} = controller;
-    let requiredTasks = 0;
-    if (controllerLevel < 3 || (minersAmount === 0 && carriersAmount === 0) || storedEnergyInCapital < 1000) {
-      requiredTasks = 2;
-    }
-
-    const currentTasks: Task[] = tasksIds
-      .map((taskId) => Task.get(taskId))
-      .filter(task => TaskUtils.isType(task, 'TASK_BOOTSTRAP_PROVINCE'));
-
-    for (let i = currentTasks.length; i < requiredTasks; i++) {
-      const task = new TaskBootstrapProvince(provinceName);
-      const taskId = task.id;
-
-      Task.addToMemory(taskId, task);
-      Province.addTask(provinceName, taskId);
-    }
-  }
-
-  static manageMiningEnergyTasks(provinceName: string): void {
-    const province = Province.get(provinceName);
-    const {capitalName, minesIds} = province;
-    const capitalRoom = Capital.getCapitalRoom(capitalName);
-    if (!capitalRoom) {
-      Log.debug(`[${provinceName}] Cannot find capitalRoom for capitalName: ${capitalName}`);
-      return;
-    }
-    const controller = capitalRoom.controller;
-    if (!controller) {
-      Log.debug(`[${provinceName}] Cannot find controller for capitalName: ${capitalName}`);
-      return;
-    }
-
-    const unassignedMines: Mine[] = minesIds.map(mineId => Mine.get(mineId))
-      .filter(mine => mine.assignedTaskId === null);
-
-    unassignedMines.forEach(unassignedMine => {
-      const {id: mineId} = unassignedMine;
-      const task = new TaskMineEnergy(provinceName, mineId);
-      const taskId = task.id;
-      Province.addTask(provinceName, taskId);
-      Task.addToMemory(taskId, task);
-      Mine.assignTask(mineId, taskId);
-    });
-  }
-
   static manageTasks(provinceName: string): void {
-    Province.manageBootstrapingTasks(provinceName);
-    Province.manageMiningEnergyTasks(provinceName);
+    PioneersGuild.manageTasks(provinceName);
+    MinersGuild.manageTasks(provinceName);
   }
 
   static assignTasks(provinceName: string): void {

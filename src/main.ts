@@ -2,7 +2,7 @@ import Log from './console/Log';
 
 import GarbageCollector from './memory/GarbageCollector';
 import Realm from './realm/realm';
-import ScreepsConsole from './console/console';
+import ScreepsConsole from './console/ScreepsConsole';
 import Settings from './settings/Settings';
 import Visuals from './visuals/Visuals';
 

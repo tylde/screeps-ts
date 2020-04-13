@@ -8,6 +8,7 @@ export default class Quarry {
   provinceName: string | null;
   assignedTaskId: string | null;
   containerId: string | null;
+  linkId: string | null;
 
   constructor(
     id: string, districtName: string, position: ElementPosition, mineralType: MineralConstant, mineralDensity: number
@@ -21,6 +22,7 @@ export default class Quarry {
     this.provinceName = null;
     this.assignedTaskId = null;
     this.containerId = null;
+    this.linkId = null;
   }
 
   // ===================================================================================================================

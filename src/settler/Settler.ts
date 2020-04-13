@@ -3,7 +3,7 @@ import Log from '../console/Log';
 import Link from '../console/Link';
 import SettlerUtils from './utils/SettlerUtils';
 import Task from '../task/Task';
-import TaskBootstrapProvince from '../task/types/TaskBootstrapProvince';
+import TaskPioneerProvince from '../task/types/TaskPioneerProvince';
 import TaskMineEnergy from '../task/types/TaskMineEnergy';
 
 export default class Settler {
@@ -119,8 +119,8 @@ export default class Settler {
 
     const {type: taskType, id: taskId} = task;
     switch (taskType) {
-      case 'TASK_BOOTSTRAP_PROVINCE':
-        TaskBootstrapProvince.run(creep, taskId);
+      case 'TASK_PIONEER_PROVINCE':
+        TaskPioneerProvince.run(creep, taskId);
         break;
       case 'TASK_MINE_ENERGY':
         TaskMineEnergy.run(creep, taskId);

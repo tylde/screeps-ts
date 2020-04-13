@@ -10,6 +10,38 @@ import Task from '../task/Task';
 import Directive from '../directives/Directive';
 
 class GarbageCollector {
+  static deleteDistrict(districtName: string): void {
+    const {provinceName, mines, quarry} = District.get(districtName);
+    Province.deleteDistrict(provinceName, districtName);
+    mines.forEach(mineId => Mine.deleteFromMemory(mineId));
+    Quarry.deleteFromMemory(quarry);
+    District.deleteFromMemory(districtName);
+  }
+
+  static deleteSettler(settlerName: string): void {
+    const {provinceName, assignedTaskId} = Settler.get(settlerName);
+    Province.deleteSettler(provinceName, settlerName);
+    if (assignedTaskId) {
+      Task.unassignTask(assignedTaskId, settlerName);
+    }
+    Settler.deleteFromMemory(settlerName);
+  }
+
+  static deleteGarrison(garrisonName: string): void {
+    const {provinceName} = Garrison.get(garrisonName);
+    Province.deleteGarrison(provinceName, garrisonName);
+    Garrison.deleteFromMemory(garrisonName);
+  }
+
+  static deleteTask(taskId: string): void {
+    const {assignedSettlerName, provinceName} = Task.get(taskId);
+    if (assignedSettlerName) {
+      Settler.unassignTask(assignedSettlerName, taskId);
+    }
+    Province.deleteTask(provinceName, taskId);
+    Task.deleteFromMemory(taskId);
+  }
+
   static cleanDistricts(): void {
     if (!Memory.rooms) {
       return;
@@ -17,11 +49,7 @@ class GarbageCollector {
     Object.keys(Memory.rooms).forEach((districtName) => {
       if (!(districtName in Game.rooms)) {
         Log.debug(`Deleting district ${districtName} from memory`);
-        const {provinceName, mines, quarry} = District.get(districtName);
-        Province.deleteDistrict(provinceName, districtName);
-        mines.forEach(mineId => Mine.deleteFromMemory(mineId));
-        Quarry.deleteFromMemory(quarry);
-        District.deleteFromMemory(districtName);
+        GarbageCollector.deleteDistrict(districtName);
       }
     });
   }
@@ -33,12 +61,7 @@ class GarbageCollector {
     Object.keys(Memory.creeps).forEach((settlerName) => {
       if (!(settlerName in Game.creeps)) {
         Log.debug(`Deleting settler ${settlerName} from memory`);
-        const {provinceName, assignedTaskId} = Settler.get(settlerName);
-        Province.deleteSettler(provinceName, settlerName);
-        if (assignedTaskId) {
-          Task.unassignTask(assignedTaskId, settlerName);
-        }
-        Settler.deleteFromMemory(settlerName);
+        GarbageCollector.deleteSettler(settlerName);
       }
     });
   }
@@ -50,22 +73,17 @@ class GarbageCollector {
     Object.keys(Memory.spawns).forEach((garrisonName) => {
       if (!(garrisonName in Game.spawns)) {
         Log.debug(`Deleting garrison ${garrisonName} from memory`);
-        const {provinceName} = Garrison.get(garrisonName);
-        Province.deleteGarrison(provinceName, garrisonName);
-        Garrison.deleteFromMemory(garrisonName);
+        GarbageCollector.deleteGarrison(garrisonName);
       }
     });
   }
 
   static cleanDoneTasks(): void {
     Object.entries(Memory.tasks).forEach(([taskId, task]) => {
-      const {isDone, assignedSettlerName, provinceName} = task;
+      const {isDone} = task;
       if (isDone) {
-        if (assignedSettlerName) {
-          Settler.unassignTask(assignedSettlerName, taskId);
-        }
-        Province.deleteTask(provinceName, taskId);
-        Task.deleteFromMemory(taskId);
+        Log.debug(`Deleting taskId ${taskId} from memory`);
+        GarbageCollector.deleteTask(taskId);
       }
     });
   }

@@ -9,6 +9,7 @@ export default class Mine {
   provinceName: string | null;
   assignedTaskId: string | null;
   containerId: string | null;
+  linkId: string | null;
 
   constructor(source: Source) {
     const {id, pos: {x, y, roomName}} = source;
@@ -22,6 +23,7 @@ export default class Mine {
     this.provinceName = null;
     this.assignedTaskId = null;
     this.containerId = null;
+    this.linkId = null;
   }
 
   // ===================================================================================================================
@@ -54,7 +56,7 @@ export default class Mine {
     Mine.updateInMemory(mineId, newMine);
   }
 
-  static unassignMine(mineId: string, taskId: string): void {
+  static unassignTask(mineId: string, taskId: string): void {
     const task: Mine = Mine.get(mineId);
     const {assignedTaskId} = task;
     if (taskId !== assignedTaskId) {

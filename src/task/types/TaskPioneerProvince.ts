@@ -6,14 +6,14 @@ import Log from '../../console/Log';
 import SettlerUtils from '../../settler/utils/SettlerUtils';
 import Settler from '../../settler/Settler';
 
-const TASK_TYPE: TaskType = 'TASK_BOOTSTRAP_PROVINCE';
+const TASK_TYPE: TaskType = 'TASK_PIONEER_PROVINCE';
 
 const PHASE = {
   MINE: 'MINE',
   CARRY: 'CARRY'
 };
 
-export default class TaskBootstrapProvince extends Task {
+export default class TaskPioneerProvince extends Task {
   constructor(provinceName: string) {
     const type = TASK_TYPE;
     const priority = TASK_PRIORITIES[TASK_TYPE];

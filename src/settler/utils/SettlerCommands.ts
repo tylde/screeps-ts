@@ -4,7 +4,9 @@ export default class SettlerCommands {
   // }
 
   static moveToPosition(creep: Creep, positionX: number, positionY: number) {
-    creep.moveTo(positionX, positionY, {visualizePathStyle: {}});
+    if (creep.fatigue === 0) {
+      creep.moveTo(positionX, positionY, {visualizePathStyle: {}});
+    }
   }
 
   static mine(creep: Creep, mineId: string): void {
