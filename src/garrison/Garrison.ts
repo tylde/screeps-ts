@@ -64,25 +64,8 @@ export default class Garrison implements SpawnMemory {
     let requiredEnergy = 0;
 
     body.forEach((bodyPart: BodyPartConstant) => {
-      if (bodyPart === 'move') {
-        requiredEnergy += 50;
-      } else if (bodyPart === 'work') {
-        requiredEnergy += 100;
-      } else if (bodyPart === 'carry') {
-        requiredEnergy += 50;
-      } else if (bodyPart === 'attack') {
-        requiredEnergy += 80;
-      } else if (bodyPart === 'ranged_attack') {
-        requiredEnergy += 150;
-      } else if (bodyPart === 'heal') {
-        requiredEnergy += 250;
-      } else if (bodyPart === 'claim') {
-        requiredEnergy += 600;
-      } else if (bodyPart === 'tough') {
-        requiredEnergy += 10;
-      }
+      requiredEnergy += BODYPART_COST[bodyPart];
     });
-
     return requiredEnergy;
   }
 

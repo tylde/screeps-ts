@@ -37,6 +37,8 @@ interface ProvinceMemory {
   districtsNames: string[];
   settlersNames: string[];
 
+  requiredSettlers: {[key in SettlerRole]: number};
+
   minesIds: string[];
   quarriesIds: string[];
 
@@ -95,9 +97,7 @@ interface DirectiveMemory {
 }
 
 interface TaskData {
-  mineId?: string;
-  fromId?: string;
-  toId?: string;
+  [key: string]: any;
 }
 
 interface TaskMemory {

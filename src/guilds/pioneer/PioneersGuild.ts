@@ -47,4 +47,9 @@ export default class PioneersGuild {
       ProvinceHandler.addTask(provinceName, taskId);
     }
   }
+
+  static calculateRequiredPioneers(provinceName: string): number {
+    const {tasksIds} = ProvinceHandler.get(provinceName);
+    return tasksIds.map(taskId => TaskHandler.get(taskId)).filter(task => task.type === 'TASK_PIONEER_PROVINCE').length;
+  }
 }

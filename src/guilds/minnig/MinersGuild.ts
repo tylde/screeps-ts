@@ -36,4 +36,9 @@ export default class MinersGuild {
       MineHandler.assignTask(mineId, taskId);
     });
   }
+
+  static calculateRequiredMiners(provinceName: string): number {
+    const {tasksIds} = ProvinceHandler.get(provinceName);
+    return tasksIds.map(taskId => TaskHandler.get(taskId)).filter(task => task.type === 'TASK_MINE_ENERGY').length;
+  }
 }

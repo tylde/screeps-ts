@@ -6,12 +6,16 @@ import Capital from './Capital';
 import Garrison from '../garrison/Garrison';
 import Settler from '../settler/Settler';
 
-import MinersGuild from '../guilds/minig/MinersGuild';
+import MinersGuild from '../guilds/minnig/MinersGuild';
 import PioneersGuild from '../guilds/pioneer/PioneersGuild';
+import WorkersGuild from '../guilds/crafts/WorkersGuild';
+import CarriersGuild from '../guilds/logistics/CarriersGuild';
 
 import ProvinceHandler from './ProvinceHandler';
 import SettlerHandler from '../settler/SettlerHandler';
 import TaskHandler from '../task/TaskHandler';
+import SETTLER_PATTERNS from '../settler/config/SettlerPatterns';
+import SettlerBody from '../settler/utils/SettlerBody';
 
 export default class Province implements ProvinceMemory {
   name: string;
@@ -19,6 +23,8 @@ export default class Province implements ProvinceMemory {
   garrisonsNames: string[];
   districtsNames: string[];
   settlersNames: string[];
+
+  requiredSettlers: {[key in SettlerRole]: number};
 
   minesIds: string[];
   quarriesIds: string[];
@@ -32,6 +38,16 @@ export default class Province implements ProvinceMemory {
     this.garrisonsNames = [garrison.name];
     this.districtsNames = [garrison.room.name];
     this.settlersNames = [];
+
+    this.requiredSettlers = {
+      SETTLER_PIONEER: 0,
+      SETTLER_LORD: 0,
+      SETTLER_WARDEN: 0,
+      SETTLER_WORKER: 0,
+      SETTLER_MINER: 0,
+      SETTLER_SCOUT: 0,
+      SETTLER_CARRIER: 0
+    };
 
     const room: Room = garrison.room;
     const sources: Source[] = room.find(FIND_SOURCES);
@@ -52,6 +68,8 @@ export default class Province implements ProvinceMemory {
   static manageTasks(provinceName: string): void {
     PioneersGuild.manageTasks(provinceName);
     MinersGuild.manageTasks(provinceName);
+    WorkersGuild.manageTasks(provinceName);
+    CarriersGuild.manageTasks(provinceName);
   }
 
   static assignTasks(provinceName: string): void {
@@ -86,6 +104,17 @@ export default class Province implements ProvinceMemory {
     const {capitalName, tasksIds} = province;
     const capitalRoom: Room = Game.rooms[capitalName];
 
+    // TODO
+    const requiredPioneers = PioneersGuild.calculateRequiredPioneers(provinceName);
+    const requiredCarriers = CarriersGuild.calculateRequiredCarriers(provinceName);
+    const requiredWorkers = WorkersGuild.calculateRequiredWorkers(provinceName);
+    const requiredMiners = MinersGuild.calculateRequiredMiners(provinceName);
+
+    ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_PIONEER', requiredPioneers);
+    ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_CARRIER', requiredCarriers);
+    ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_WORKER', requiredWorkers);
+    ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_MINER', requiredMiners);
+
     if (!capitalRoom) {
       Log.debug(`No room found for capitalName: ${capitalName}`);
       return [];
@@ -101,6 +130,7 @@ export default class Province implements ProvinceMemory {
     // TODO MAKE METHOD
     unassignedTasks.sort((a, b) => a.priority > b.priority ? 1 : -1);
 
+    // TODO PRIORITY
     const unassignedTask = unassignedTasks[0];
     const {assignableSettlers, type} = unassignedTask;
 
@@ -109,9 +139,11 @@ export default class Province implements ProvinceMemory {
       return [];
     }
 
+    const energyCapacityAvailable = Capital.getSpawnEnergyCapacity(capitalName);
+
     const settlerRole = assignableSettlers[0];
 
-    const settlerBody = SettlerPatterns.calculateBodyToSpawn(settlerRole);
+    const settlerBody = SettlerBody.calculateBodyToSpawn(settlerRole, energyCapacityAvailable);
 
     return [{role: settlerRole, body: settlerBody}];
   }

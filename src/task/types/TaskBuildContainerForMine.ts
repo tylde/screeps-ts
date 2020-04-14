@@ -1,7 +1,7 @@
 import Task from '../Task';
 import TASK_PRIORITIES from '../config/TaskPriorities';
 
-const TASK_TYPE = 'TASK_BUILD_CONTAINER_FOR_MINE';
+const TASK_TYPE: TaskType = 'TASK_BUILD_CONTAINER_FOR_MINE';
 
 export default class TaskBuildContainerForMine extends Task {
   constructor(provinceName: string, mineId: string) {

@@ -24,6 +24,13 @@ export default class ProvinceHandler {
 
   // ===================================================================================================================
 
+  static setRequiredSettlers(provinceName: string, settlerRole: SettlerRole, requiredAmount: number): void {
+    const province = ProvinceHandler.get(provinceName);
+    const {requiredSettlers} = province;
+    const newRequiredSettlers = {...requiredSettlers, [settlerRole]: requiredAmount};
+    ProvinceHandler.update(provinceName, {...province, requiredSettlers: newRequiredSettlers});
+  }
+
   static addDistrict(provinceName: string, districtName: string): void {
     const province = ProvinceHandler.get(provinceName);
     const {districtsNames} = province;
