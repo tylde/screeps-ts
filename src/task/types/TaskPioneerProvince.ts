@@ -6,6 +6,7 @@ import TASK_PRIORITIES from '../config/TaskPriorities';
 import SettlerHandler from '../../settler/SettlerHandler';
 import SettlerUtils from '../../settler/utils/SettlerUtils';
 import TaskHandler from '../TaskHandler';
+import SettlerCommands from '../../settler/utils/SettlerCommands';
 
 const TASK_TYPE: TaskType = 'TASK_PIONEER_PROVINCE';
 
@@ -36,7 +37,7 @@ export default class TaskPioneerProvince extends Task {
         Log.debug(`[${type}] ${settlerName} No sources found.`);
         return;
       }
-      if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+      if (SettlerCommands.mineSource(creep, source) === ERR_NOT_IN_RANGE) {
         creep.moveTo(source, {visualizePathStyle: {}});
       }
     } else if (creep.memory.taskPhase === PHASE.CARRY) {

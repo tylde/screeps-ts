@@ -64,8 +64,8 @@ export default class Realm implements RealmMemory {
 
   static initializeProvinces(): void {
     ProvinceHandler.init();
-    Object.entries(Game.spawns).forEach(([garrisonName, spawn], index) => {
-      const provinceName = `Province ${index + 1}`;
+    Object.entries(Game.spawns).forEach(([garrisonName, spawn]) => {
+      const provinceName = spawn.room.name;
       const province = new Province(provinceName, spawn);
       const districtName = spawn.room.name;
 

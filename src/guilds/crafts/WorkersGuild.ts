@@ -5,7 +5,6 @@ import TaskBuildStructure from '../../task/types/TaskBuildStructure';
 
 import ProvinceHandler from '../../province/ProvinceHandler';
 import TaskHandler from '../../task/TaskHandler';
-import Capital from '../../province/Capital';
 
 export default class WorkersGuild {
   static createConstructionSite(
@@ -51,7 +50,7 @@ export default class WorkersGuild {
 
     // const {capitalName} = ProvinceHandler.get(provinceName);
     // const spawnEnergyCapacity = Capital.getSpawnEnergyCapacity(capitalName);
-    const minimalWorkerToUpgrade = 3;
+    const minimalWorkerToUpgrade = 2;
     return minimalWorkerToUpgrade;
   }
 }

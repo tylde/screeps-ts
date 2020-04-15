@@ -10,13 +10,14 @@
 type SettlerPatterns = {[key in SettlerRole]: string};
 
 const SETTLER_PATTERNS: SettlerPatterns = {
-  ['SETTLER_CARRIER']: '*2C*1M',
-  ['SETTLER_MINER']: '^6W1M',
-  ['SETTLER_PIONEER']: '*1W*1C*1M',
-  ['SETTLER_WORKER']: '*1W*1C*1M',
-  ['SETTLER_SCOUT']: '1M',
-  ['SETTLER_WARDEN']: '1M',
-  ['SETTLER_LORD']: '1M'
+  SETTLER_CARRIER: '*2C*1M',
+  SETTLER_MINER: '^6W1M',
+  SETTLER_PIONEER: '*1W*1C*1M',
+  SETTLER_WORKER: '*1W*1C*1M',
+  SETTLER_SCOUT: '1M',
+  SETTLER_WARDEN: '1M',
+  SETTLER_LORD: '1M',
+  SETTLER_DIPLOMAT: '1L1M'
 };
 
 export default SETTLER_PATTERNS;

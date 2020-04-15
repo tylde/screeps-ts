@@ -64,6 +64,10 @@ interface MineMemory {
   assignedTaskId: string | null;
   containerId: string | null;
   linkId: string | null;
+
+  currentCycleEnergy: number;
+  lastCycleEnergy: number;
+  lastTenCyclesEnergy: number[];
 }
 
 interface QuarryMemory {

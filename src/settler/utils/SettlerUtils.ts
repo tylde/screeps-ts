@@ -48,4 +48,8 @@ export default class SettlerUtils {
 
     return requiredEnergy;
   }
+
+  static getPartAmount(creep: Creep, bodyPart: BodyPartConstant): number {
+    return creep.body.filter(part => part.type === bodyPart).length;
+  }
 }

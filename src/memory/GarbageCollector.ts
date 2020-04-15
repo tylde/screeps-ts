@@ -89,7 +89,7 @@ class GarbageCollector {
   }
 
   static clean(): void {
-    this.cleanDistricts();
+    // this.cleanDistricts();
     this.cleanSettlers();
     this.cleanGarrisons();
     this.cleanDoneTasks();

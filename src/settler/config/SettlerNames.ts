@@ -7,7 +7,8 @@ const SETTLER_NAMES: SettlerNames = {
   SETTLER_WORKER: 'Worker', // WR
   SETTLER_SCOUT: 'Scout', // SC
   SETTLER_WARDEN: 'Warden', // WN
-  SETTLER_LORD: 'Lord' // LD
+  SETTLER_LORD: 'Lord', // LD
+  SETTLER_DIPLOMAT: 'Diplomat' // DT
 };
 
 export default SETTLER_NAMES;

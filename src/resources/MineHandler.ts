@@ -45,4 +45,25 @@ export default class MineHandler {
     const updatedMine: MineMemory = {...mine, assignedTaskId: null};
     MineHandler.update(mineId, updatedMine);
   }
+
+  // ===================================================================================================================
+
+  static updateCurrentCycleEnergy(mineId: string, minedEnergy: number): void {
+    const mine: MineMemory = MineHandler.get(mineId);
+    const updatedMine: MineMemory = {...mine, currentCycleEnergy: mine.currentCycleEnergy + minedEnergy};
+    MineHandler.update(mineId, updatedMine);
+  }
+
+  static updateCycleEnergy(mineId: string): void {
+    const mine: MineMemory = MineHandler.get(mineId);
+    const {currentCycleEnergy, lastTenCyclesEnergy} = mine;
+
+    lastTenCyclesEnergy.push(currentCycleEnergy);
+    if (lastTenCyclesEnergy.length > 10) {
+      lastTenCyclesEnergy.shift();
+    }
+
+    const updatedMine: MineMemory = {...mine, currentCycleEnergy: 0, lastCycleEnergy: currentCycleEnergy};
+    MineHandler.update(mineId, updatedMine);
+  }
 }

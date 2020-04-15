@@ -1,7 +1,5 @@
 import Log from '../console/Log';
 
-import SettlerPatterns from '../settler/config/SettlerPatterns';
-
 import Capital from './Capital';
 import Garrison from '../garrison/Garrison';
 import Settler from '../settler/Settler';
@@ -14,8 +12,9 @@ import CarriersGuild from '../guilds/logistics/CarriersGuild';
 import ProvinceHandler from './ProvinceHandler';
 import SettlerHandler from '../settler/SettlerHandler';
 import TaskHandler from '../task/TaskHandler';
-import SETTLER_PATTERNS from '../settler/config/SettlerPatterns';
 import SettlerBody from '../settler/utils/SettlerBody';
+import Mine from '../resources/Mine';
+import ScoutsGuild from '../guilds/scouting/ScoutsGuild';
 
 export default class Province implements ProvinceMemory {
   name: string;
@@ -46,7 +45,8 @@ export default class Province implements ProvinceMemory {
       SETTLER_WORKER: 0,
       SETTLER_MINER: 0,
       SETTLER_SCOUT: 0,
-      SETTLER_CARRIER: 0
+      SETTLER_CARRIER: 0,
+      SETTLER_DIPLOMAT: 0
     };
 
     const room: Room = garrison.room;
@@ -70,6 +70,7 @@ export default class Province implements ProvinceMemory {
     MinersGuild.manageTasks(provinceName);
     WorkersGuild.manageTasks(provinceName);
     CarriersGuild.manageTasks(provinceName);
+    ScoutsGuild.manageTasks(provinceName);
   }
 
   static assignTasks(provinceName: string): void {
@@ -109,11 +110,13 @@ export default class Province implements ProvinceMemory {
     const requiredCarriers = CarriersGuild.calculateRequiredCarriers(provinceName);
     const requiredWorkers = WorkersGuild.calculateRequiredWorkers(provinceName);
     const requiredMiners = MinersGuild.calculateRequiredMiners(provinceName);
+    const requiredScouts = ScoutsGuild.calculateRequiredScouts(provinceName);
 
     ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_PIONEER', requiredPioneers);
     ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_CARRIER', requiredCarriers);
     ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_WORKER', requiredWorkers);
     ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_MINER', requiredMiners);
+    ProvinceHandler.setRequiredSettlers(provinceName, 'SETTLER_SCOUT', requiredScouts);
 
     if (!capitalRoom) {
       Log.debug(`No room found for capitalName: ${capitalName}`);
@@ -182,9 +185,13 @@ export default class Province implements ProvinceMemory {
     Province.spawnCreep(provinceName);
   }
 
-  static manageSettlers(provinceName: string): void {
-    const province = ProvinceHandler.get(provinceName);
-    const {settlersNames} = province;
+  static manageMines(minesIds: string[]): void {
+    minesIds.forEach((mineId) => {
+      Mine.run(mineId);
+    });
+  }
+
+  static manageSettlers(settlersNames: string[]): void {
     settlersNames.forEach((settlerName) => {
       Settler.run(settlerName);
     });
@@ -198,10 +205,14 @@ export default class Province implements ProvinceMemory {
       return;
     }
 
+    const {minesIds, settlersNames} = province;
+
 
     Province.manageTasks(provinceName);
     Province.assignTasks(provinceName);
     Province.manageSpawn(provinceName);
-    Province.manageSettlers(provinceName);
+
+    Province.manageMines(minesIds);
+    Province.manageSettlers(settlersNames);
   }
 }

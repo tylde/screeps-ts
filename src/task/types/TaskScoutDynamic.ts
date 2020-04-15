@@ -1,5 +1,6 @@
 import Task from '../Task';
 import TASK_PRIORITIES from '../config/TaskPriorities';
+import SettlerCommands from '../../settler/utils/SettlerCommands';
 
 const TASK_TYPE: TaskType = 'TASK_SCOUT_DYNAMIC';
 
@@ -15,6 +16,7 @@ export default class TaskScoutDynamic extends Task {
   }
 
   static run(creep: Creep, taskId: string): void {
-    console.log(creep, taskId);
+    // TODO find next exit and move to
+    SettlerCommands.moveRandomly(creep);
   }
 }
