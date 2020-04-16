@@ -21,6 +21,10 @@ function main(): void {
     Realm.run();
     Visuals.draw();
 
+    // Object.values(Memory.tasks).filter(task => task.type === 'TASK_SCOUT_DYNAMIC').forEach((task) => {
+    //   GarbageCollector.deleteTask(task.id);
+    // });
+
     // Log.debug(`Tick usage: ${Game.cpu.getUsed() - startCpu}`);
   } catch (error) {
     Log.error(error.stack);

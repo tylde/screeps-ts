@@ -9,6 +9,7 @@ import SettlerHandler from './SettlerHandler';
 import TaskHandler from '../task/TaskHandler';
 import TaskMineEnergy from '../task/types/TaskMineEnergy';
 import TaskScoutDynamic from '../task/types/TaskScoutDynamic';
+import TaskUpgradeController from '../task/types/TaskUpgradeController';
 
 export default class Settler implements CreepMemory {
   name: string;
@@ -66,6 +67,9 @@ export default class Settler implements CreepMemory {
         break;
       case 'TASK_SCOUT_DYNAMIC':
         TaskScoutDynamic.run(creep, taskId);
+        break;
+      case 'TASK_UPGRADE_CONTROLLER':
+        TaskUpgradeController.run(creep, taskId);
         break;
       default:
         Log.debug(`Settler has tried to run unknown task: ${taskType}`);

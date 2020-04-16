@@ -101,12 +101,12 @@ class GarbageCollector {
     }
 
     if (
-      Object.keys(Memory.provinces).length === 0
-      && Object.keys(Memory.rooms).length === 0
-      && Object.keys(Memory.spawns).length === 0
-      && Object.keys(Memory.creeps).length === 0
-      && Object.keys(Memory.mines).length === 0
-      && Object.keys(Memory.quarries).length === 0
+      Memory.provinces && Object.keys(Memory.provinces).length === 0
+      && Memory.rooms && Object.keys(Memory.rooms).length === 0
+      && Memory.spawns && Object.keys(Memory.spawns).length === 0
+      && Memory.creeps && Object.keys(Memory.creeps).length === 0
+      && Memory.mines && Object.keys(Memory.mines).length === 0
+      && Memory.quarries && Object.keys(Memory.quarries).length === 0
     ) {
       return;
     }

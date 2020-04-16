@@ -7,6 +7,7 @@ class ScreepsConsole {
     global.setShowDebugLogs = this.setShowDebugLogs;
     global.order = this.order;
     global.deleteTask = this.deleteTask;
+    global.deleteMemory = this.deleteMemory;
   }
 
   static printObject(): string {
@@ -23,6 +24,10 @@ class ScreepsConsole {
 
   static deleteTask(taskId: string): void {
     GarbageCollector.deleteTask(taskId);
+  }
+
+  static deleteMemory(): void {
+    GarbageCollector.delete();
   }
 }
 

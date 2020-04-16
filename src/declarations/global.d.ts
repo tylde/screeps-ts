@@ -6,6 +6,7 @@ declare namespace NodeJS {
     setShowDebugLogs(value: boolean): void;
     order(): string;
     deleteTask(taskId: string): void;
+    deleteMemory(): void;
   }
 
 }

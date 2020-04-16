@@ -5,6 +5,8 @@ import TaskBuildStructure from '../../task/types/TaskBuildStructure';
 
 import ProvinceHandler from '../../province/ProvinceHandler';
 import TaskHandler from '../../task/TaskHandler';
+import TaskScoutDynamic from '../../task/types/TaskScoutDynamic';
+import TaskUpgradeController from '../../task/types/TaskUpgradeController';
 
 export default class WorkersGuild {
   static createConstructionSite(
@@ -40,7 +42,16 @@ export default class WorkersGuild {
   }
 
   static manageTasks(provinceName: string): void {
-    const province = ProvinceHandler.get(provinceName);
+    const {tasksIds} = ProvinceHandler.get(provinceName);
+    const dynamicScoutTasks = tasksIds.map(taskId => TaskHandler.get(taskId))
+      .filter(task => task.type === 'TASK_UPGRADE_CONTROLLER').length;
+
+    for (let i = dynamicScoutTasks; i < 2; i++) {
+      const task = new TaskUpgradeController(provinceName);
+      const taskId = task.id;
+      ProvinceHandler.addTask(provinceName, taskId);
+      TaskHandler.add(taskId, task);
+    }
   }
 
   static calculateRequiredWorkers(provinceName: string): number {

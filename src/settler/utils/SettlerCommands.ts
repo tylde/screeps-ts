@@ -35,6 +35,10 @@ export default class SettlerCommands {
     return result;
   }
 
+  static upgradeController(creep: Creep, controller: StructureController): ScreepsReturnCode {
+    return creep.upgradeController(controller);
+  }
+
   // static transportEnergy(creep: Creep): void {
   //
   // }

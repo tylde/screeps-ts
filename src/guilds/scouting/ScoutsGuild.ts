@@ -2,13 +2,15 @@ import ProvinceHandler from '../../province/ProvinceHandler';
 import TaskHandler from '../../task/TaskHandler';
 import TaskScoutDynamic from '../../task/types/TaskScoutDynamic';
 
+const SCOUTING_TASKS = 3;
+
 export default class ScoutsGuild {
   static manageTasks(provinceName: string): void {
     const {tasksIds} = ProvinceHandler.get(provinceName);
     const dynamicScoutTasks = tasksIds.map(taskId => TaskHandler.get(taskId))
       .filter(task => task.type === 'TASK_SCOUT_DYNAMIC').length;
 
-    for (let i = dynamicScoutTasks; i < 3; i++) {
+    for (let i = dynamicScoutTasks; i < SCOUTING_TASKS; i++) {
       const task = new TaskScoutDynamic(provinceName);
       const taskId = task.id;
       ProvinceHandler.addTask(provinceName, taskId);
